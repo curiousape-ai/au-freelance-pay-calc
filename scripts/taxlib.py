@@ -1,39 +1,36 @@
-CONFIG = {
-    "fy": "2025-26",
-    "last_checked": "2026-08-22",
-    "gst_rate": 0.10,
-    "medicare_levy": 0.02,
-    "medicare_lower": 28011,
-    "medicare_upper": 35013,
-    "default_days": 220,
-}
+import json
+from pathlib import Path
+
+# Single source of truth: scripts/cfg.json (same values served as config.js).
+CONFIG = json.loads((Path(__file__).resolve().parent / "cfg.json").read_text())
 
 def income_tax(taxable):
     taxable = float(taxable)
     if taxable <= 0:
         return 0.0
-    if taxable <= 18200:
-        return 0.0
-    if taxable <= 45000:
-        return (taxable - 18200) * 0.16
-    if taxable <= 135000:
-        return 4288 + (taxable - 45000) * 0.30
-    if taxable <= 190000:
-        return 31288 + (taxable - 135000) * 0.37
-    return 51638 + (taxable - 190000) * 0.45
+    prev = 0.0
+    for b in CONFIG["brackets"]:
+        up_to = b["up_to"]
+        if up_to is None or taxable <= up_to:
+            return b["base"] + (taxable - prev) * b["rate"]
+        prev = float(up_to)
+    return 0.0  # unreachable while a null (top) bracket exists
 
 def medicare_levy(taxable):
     taxable = float(taxable)
-    lower, upper, rate = 28011, 35013, 0.02
+    lower = CONFIG["medicare_lower"]
+    upper = CONFIG["medicare_upper"]
+    rate = CONFIG["medicare_levy"]
     if taxable <= lower:
         return 0.0
     if taxable < upper:
         return min((taxable - lower) * 0.10, taxable * rate)
     return taxable * rate
 
-def calculate(mode, amount, days=220, gst_inclusive=False):
+def calculate(mode, amount, days=None, gst_inclusive=False):
+    days = days or CONFIG["default_days"]
     amount = float(amount) or 0.0
-    r = 0.10
+    r = CONFIG["gst_rate"]
     if gst_inclusive:
         ex = amount / (1 + r)
         inc = amount

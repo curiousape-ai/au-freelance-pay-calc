@@ -4,14 +4,16 @@
 
   function incomeTax(taxable) {
     if (taxable <= 0) return 0;
-    const b = CFG.brackets;
-    // brackets: up_to thresholds with cumulative base for income above previous
-    // Manual progressive calc matching ATO table
-    if (taxable <= 18200) return 0;
-    if (taxable <= 45000) return (taxable - 18200) * 0.16;
-    if (taxable <= 135000) return 4288 + (taxable - 45000) * 0.30;
-    if (taxable <= 190000) return 31288 + (taxable - 135000) * 0.37;
-    return 51638 + (taxable - 190000) * 0.45;
+    // Progressive calc driven entirely by CFG.brackets:
+    // each bracket carries the cumulative ATO base tax at its lower edge.
+    let prev = 0;
+    for (const b of CFG.brackets) {
+      if (b.up_to === null || taxable <= b.up_to) {
+        return b.base + (taxable - prev) * b.rate;
+      }
+      prev = b.up_to;
+    }
+    return 0; // unreachable while a null (top) bracket exists
   }
 
   function medicareLevy(taxable) {
