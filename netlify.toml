@@ -1,0 +1,15 @@
+[build]
+  command = "python3 scripts/generate_site.py"
+  publish = "public"
+
+[build.environment]
+  PYTHON_VERSION = "3.13"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'nonce-auc-jsonld' https://plausible.io; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://plausible.io; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

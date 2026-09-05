@@ -1,76 +1,45 @@
+from datetime import date
 from pathlib import Path
-import json, os, sys
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from taxlib import PRESET_DAY_RATES, PRESET_SALARIES
-ROOT = Path(__file__).resolve().parent.parent
-PUB = ROOT / "public"
-cfg = json.loads((ROOT / "scripts" / "cfg.json").read_text())
-host = os.environ.get("SITE_BASE_URL", cfg["base_url"]).rstrip("/")
-days = PRESET_DAY_RATES
-sals = PRESET_SALARIES
-urls = ["/"] + [f"/{r}-day-rate/" for r in days] + [f"/{s}-salary-after-tax/" for s in sals]
+import html,json,os,sys
+sys.path.insert(0,str(Path(__file__).resolve().parent));import taxlib as T
+ROOT=Path(__file__).resolve().parent.parent;PUB=ROOT/"public";cfg=T.CONFIG;fy=cfg["default_fy"];yc=cfg["years"][fy];host=os.environ.get("SITE_BASE_URL",cfg["base_url"]).rstrip("/");today=date.today().isoformat()
+urls=["/","/presets/","/how-it-works/"]+[f"/{r}-day-rate/" for r in T.PRESET_DAY_RATES]+[f"/{s}-salary-after-tax/" for s in T.PRESET_SALARIES]+[f"/{h}-hourly-rate/" for h in T.PRESET_HOURLY_RATES]
+PUB.joinpath("robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {host}/sitemap.xml\n")
+entries="\n".join(f"  <url><loc>{host}{u}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>{'1.0' if u=='/' else '0.8'}</priority></url>" for u in urls)
+PUB.joinpath("sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{entries}\n</urlset>\n')
+day_lines="\n".join(f"- [${r:,}/day]({host}/{r}-day-rate/)" for r in T.PRESET_DAY_RATES);sal_lines="\n".join(f"- [${s:,} salary]({host}/{s}-salary-after-tax/)" for s in T.PRESET_SALARIES);hour_lines="\n".join(f"- [${h:,}/hour]({host}/{h}-hourly-rate/)" for h in T.PRESET_HOURLY_RATES)
+PUB.joinpath("llms.txt").write_text(f"""# AU Freelancer Calc
+> Australian contractor and employee take-home calculator for FY{fy}.
 
-PUB.joinpath("robots.txt").write_text(
-    f"""User-agent: *
-Allow: /
+Disclaimer: Estimate only, not tax, financial or legal advice. Uses Australian resident FY{fy} brackets, 10% GST, 2% Medicare with single low-income thresholds, optional HELP repayments and 220 billable days by default.
 
-# AI crawlers welcome (explicit allow; no Disallow)
-# User-agent: GPTBot
-# Allow: /
-# User-agent: ClaudeBot
-# Allow: /
-# User-agent: Google-Extended
-# Allow: /
-
-Sitemap: {host}/sitemap.xml
-""",
-    encoding="utf-8",
-)
-
-def money(n):
-    return f"${n:,.0f}"
-
-llms_day = [400, 500, 600, 700, 750, 800, 850, 900, 1000, 1100, 1200, 1300, 1400, 1500]
-llms_sal = sals
-day_lines = "\n".join(f"- [{money(r)}/day]({host}/{r}-day-rate/)" for r in llms_day)
-sal_lines = "\n".join(f"- [{money(s)} after tax]({host}/{s}-salary-after-tax/)" for s in llms_sal)
-PUB.joinpath("llms.txt").write_text(
-    f"""# AU Freelancer Calc
-> Day rate to annual to take-home for Australian contractors (FY2025-26 estimate).
-
-**Disclaimer:** Estimate only — not tax, financial, or legal advice. Uses ATO resident brackets for FY2025-26 (last checked 2026-08-22), GST 10%, Medicare levy 2% with single low-income shade $28,011-$35,013. Default 220 billable days. Taxable income is GST-exclusive revenue; no deductions, HELP/HECS, MLS, offsets, or super.
+## Methodology
+Contractor taxable income is GST-exclusive revenue minus entered deductions. Income tax is calculated progressively, then Medicare and any selected HELP repayment are subtracted. Day-rate annual revenue is the rate multiplied by billable days. Hourly revenue also multiplies by hours per day. Employee salary excludes GST and employer super is shown on top. The reverse solver uses bisection to find the ex-GST day rate that reaches a target weekly take-home.
 
 ## Start here
-- [Calculator home]({host}/)
+- [Calculator]({host}/)
+- [How it works]({host}/how-it-works/)
+- [All presets]({host}/presets/)
 
-## Popular day rates
+## Day rates
 {day_lines}
 
-## Salary after tax (freelancer equivalent)
+## Employee salaries
 {sal_lines}
 
-## Sources
-- [ATO resident tax rates 2025-26](https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents/)
-- [ATO Medicare levy reduction](https://www.ato.gov.au/individuals-and-families/medicare-and-private-health-insurance/medicare-levy/medicare-levy-reduction/medicare-levy-reduction-for-low-income-earners)
-- [ATO GST overview](https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst)
-""",
-    encoding="utf-8",
-)
+## Hourly rates
+{hour_lines}
+""")
 
-entries = []
-for u in urls:
-    prio = "1.0" if u == "/" else "0.8"
-    loc = f"{host}{u}"
-    entries.append(f"  <url>\n    <loc>{loc}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>{prio}</priority>\n  </url>")
-PUB.joinpath("sitemap.xml").write_text(
-    '<?xml version="1.0" encoding="UTF-8"?>\n'
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    + "\n".join(entries)
-    + "\n</urlset>\n",
-    encoding="utf-8",
-)
-ROOT.joinpath("variant-count.json").write_text(
-    json.dumps({"day_rates": days, "salaries": sals, "variant_pages": len(days)+len(sals), "total_urls_in_sitemap": len(urls)}, indent=2),
-    encoding="utf-8",
-)
-print("meta written", len(urls), "urls")
+def shell(title,h1,body):
+  return f'''<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)}</title><link rel="stylesheet" href="/styles.css"><link rel="icon" href="/favicon.svg"></head><body><main class="wrap content-page"><header class="hero"><div><div class="badge">FY{fy} · Estimate only</div><h1>{html.escape(h1)}</h1></div><a class="ghost" href="/">Calculator</a></header>{body}<footer><a href="/">Calculator</a> · <a href="/presets/">All presets</a> · <a href="/how-it-works/">How it works</a></footer></main></body></html>'''
+
+def preset_rows(items,mode,path,label):
+  return "".join(f'<tr><td><a href="{path.format(v=v)}">{label(v)}</a></td><td>{T.fmt_aud(T.calculate(mode,v,fy=fy)["takeHome"])}</td></tr>' for v in items)
+rows=preset_rows(T.PRESET_DAY_RATES,"day","/{v}-day-rate/",lambda v:f"${v:,}/day")+preset_rows(T.PRESET_SALARIES,"employee","/{v}-salary-after-tax/",lambda v:f"${v:,} salary")+preset_rows(T.PRESET_HOURLY_RATES,"hourly","/{v}-hourly-rate/",lambda v:f"${v:,}/hour")
+(PUB/"presets").mkdir(exist_ok=True);(PUB/"presets"/"index.html").write_text(shell(f"All calculator presets — FY{fy}","All calculator presets",f'<section class="card"><table class="baked"><thead><tr><th>Preset</th><th>Estimated take-home</th></tr></thead><tbody>{rows}</tbody></table></section>'))
+method=f'''<section class="card"><h2>Billable-day arithmetic</h2><p>The default is 220 billable days: roughly 260 weekdays minus annual leave, public holidays, sick days and non-billable time. Change it to match your workload.</p><h2>Taxable income and GST</h2><p>For contractors, taxable income is GST-exclusive revenue minus entered deductions. GST collected is not treated as income because it is remitted through BAS.</p><h2>Tax, Medicare and HELP</h2><p>Resident income tax uses FY{fy} progressive brackets. Medicare uses the 2% single-person calculation and low-income shade. HELP is optional and uses the FY{fy} marginal repayment thresholds.</p><h2>Reverse solver</h2><p>The target mode repeatedly tests an ex-GST day rate until its estimated weekly take-home matches the target. It uses the same tax calculation as the forward modes.</p><h2>Exclusions</h2><p>Medicare levy surcharge, tax offsets, family and SAPTO thresholds, company and PSI structures are excluded. This is an estimate, not advice.</p></section>'''
+(PUB/"how-it-works").mkdir(exist_ok=True);(PUB/"how-it-works"/"index.html").write_text(shell(f"How the calculator works — FY{fy}","How this calculator works",method))
+PUB.joinpath("404.html").write_text(shell("Page not found — AU Freelancer Calc","That rate isn't a preset yet",'<section class="card"><p>Try the <a href="/">full calculator</a> for any rate, or browse the <a href="/presets/">preset index</a>.</p></section>'))
+ROOT.joinpath("variant-count.json").write_text(json.dumps({"day_rates":T.PRESET_DAY_RATES,"salaries":T.PRESET_SALARIES,"hourly_rates":T.PRESET_HOURLY_RATES,"variant_pages":len(urls)-3,"total_urls_in_sitemap":len(urls)},indent=2))
+print("meta written",len(urls),"urls")

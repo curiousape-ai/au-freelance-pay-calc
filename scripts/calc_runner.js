@@ -10,7 +10,7 @@ eval(fs.readFileSync(path.join(HERE, "embedded", "calc.js"), "utf8"));
 const cases = JSON.parse(fs.readFileSync(0, "utf8"));
 const out = cases.map((c) =>
   c.mode === "solve"
-    ? { solved: window.AUCalc.solveDayRateForWeeklyTakeHome(c.amount, c.days, c.deductions) }
+    ? { solved: window.AUCalc.solveDayRateForWeeklyTakeHome(c.amount, c.days, c.deductions, c.fy, c.hasHelp) }
     : window.AUCalc.calculate(c)
 );
 process.stdout.write(JSON.stringify(out));

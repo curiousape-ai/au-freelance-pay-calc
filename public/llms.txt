@@ -1,41 +1,68 @@
 # AU Freelancer Calc
-> Day rate to annual to take-home for Australian contractors (FY2025-26 estimate).
+> Australian contractor and employee take-home calculator for FY2026-27.
 
-**Disclaimer:** Estimate only — not tax, financial, or legal advice. Uses ATO resident brackets for FY2025-26 (last checked 2026-08-22), GST 10%, Medicare levy 2% with single low-income shade $28,011-$35,013. Default 220 billable days. Taxable income is GST-exclusive revenue; no deductions, HELP/HECS, MLS, offsets, or super.
+Disclaimer: Estimate only, not tax, financial or legal advice. Uses Australian resident FY2026-27 brackets, 10% GST, 2% Medicare with single low-income thresholds, optional HELP repayments and 220 billable days by default.
+
+## Methodology
+Contractor taxable income is GST-exclusive revenue minus entered deductions. Income tax is calculated progressively, then Medicare and any selected HELP repayment are subtracted. Day-rate annual revenue is the rate multiplied by billable days. Hourly revenue also multiplies by hours per day. Employee salary excludes GST and employer super is shown on top. The reverse solver uses bisection to find the ex-GST day rate that reaches a target weekly take-home.
 
 ## Start here
-- [Calculator home](https://au-freelance-pay-calc.netlify.app/)
+- [Calculator](https://au-freelance-pay-calc.netlify.app/)
+- [How it works](https://au-freelance-pay-calc.netlify.app/how-it-works/)
+- [All presets](https://au-freelance-pay-calc.netlify.app/presets/)
 
-## Popular day rates
+## Day rates
 - [$400/day](https://au-freelance-pay-calc.netlify.app/400-day-rate/)
+- [$450/day](https://au-freelance-pay-calc.netlify.app/450-day-rate/)
 - [$500/day](https://au-freelance-pay-calc.netlify.app/500-day-rate/)
+- [$550/day](https://au-freelance-pay-calc.netlify.app/550-day-rate/)
 - [$600/day](https://au-freelance-pay-calc.netlify.app/600-day-rate/)
+- [$650/day](https://au-freelance-pay-calc.netlify.app/650-day-rate/)
 - [$700/day](https://au-freelance-pay-calc.netlify.app/700-day-rate/)
 - [$750/day](https://au-freelance-pay-calc.netlify.app/750-day-rate/)
 - [$800/day](https://au-freelance-pay-calc.netlify.app/800-day-rate/)
 - [$850/day](https://au-freelance-pay-calc.netlify.app/850-day-rate/)
 - [$900/day](https://au-freelance-pay-calc.netlify.app/900-day-rate/)
+- [$950/day](https://au-freelance-pay-calc.netlify.app/950-day-rate/)
 - [$1,000/day](https://au-freelance-pay-calc.netlify.app/1000-day-rate/)
+- [$1,050/day](https://au-freelance-pay-calc.netlify.app/1050-day-rate/)
 - [$1,100/day](https://au-freelance-pay-calc.netlify.app/1100-day-rate/)
+- [$1,150/day](https://au-freelance-pay-calc.netlify.app/1150-day-rate/)
 - [$1,200/day](https://au-freelance-pay-calc.netlify.app/1200-day-rate/)
+- [$1,250/day](https://au-freelance-pay-calc.netlify.app/1250-day-rate/)
 - [$1,300/day](https://au-freelance-pay-calc.netlify.app/1300-day-rate/)
+- [$1,350/day](https://au-freelance-pay-calc.netlify.app/1350-day-rate/)
 - [$1,400/day](https://au-freelance-pay-calc.netlify.app/1400-day-rate/)
+- [$1,450/day](https://au-freelance-pay-calc.netlify.app/1450-day-rate/)
 - [$1,500/day](https://au-freelance-pay-calc.netlify.app/1500-day-rate/)
 
-## Salary after tax (freelancer equivalent)
-- [$60,000 after tax](https://au-freelance-pay-calc.netlify.app/60000-salary-after-tax/)
-- [$70,000 after tax](https://au-freelance-pay-calc.netlify.app/70000-salary-after-tax/)
-- [$80,000 after tax](https://au-freelance-pay-calc.netlify.app/80000-salary-after-tax/)
-- [$90,000 after tax](https://au-freelance-pay-calc.netlify.app/90000-salary-after-tax/)
-- [$100,000 after tax](https://au-freelance-pay-calc.netlify.app/100000-salary-after-tax/)
-- [$110,000 after tax](https://au-freelance-pay-calc.netlify.app/110000-salary-after-tax/)
-- [$120,000 after tax](https://au-freelance-pay-calc.netlify.app/120000-salary-after-tax/)
-- [$130,000 after tax](https://au-freelance-pay-calc.netlify.app/130000-salary-after-tax/)
-- [$150,000 after tax](https://au-freelance-pay-calc.netlify.app/150000-salary-after-tax/)
-- [$180,000 after tax](https://au-freelance-pay-calc.netlify.app/180000-salary-after-tax/)
-- [$200,000 after tax](https://au-freelance-pay-calc.netlify.app/200000-salary-after-tax/)
+## Employee salaries
+- [$60,000 salary](https://au-freelance-pay-calc.netlify.app/60000-salary-after-tax/)
+- [$70,000 salary](https://au-freelance-pay-calc.netlify.app/70000-salary-after-tax/)
+- [$80,000 salary](https://au-freelance-pay-calc.netlify.app/80000-salary-after-tax/)
+- [$90,000 salary](https://au-freelance-pay-calc.netlify.app/90000-salary-after-tax/)
+- [$100,000 salary](https://au-freelance-pay-calc.netlify.app/100000-salary-after-tax/)
+- [$110,000 salary](https://au-freelance-pay-calc.netlify.app/110000-salary-after-tax/)
+- [$120,000 salary](https://au-freelance-pay-calc.netlify.app/120000-salary-after-tax/)
+- [$130,000 salary](https://au-freelance-pay-calc.netlify.app/130000-salary-after-tax/)
+- [$150,000 salary](https://au-freelance-pay-calc.netlify.app/150000-salary-after-tax/)
+- [$180,000 salary](https://au-freelance-pay-calc.netlify.app/180000-salary-after-tax/)
+- [$200,000 salary](https://au-freelance-pay-calc.netlify.app/200000-salary-after-tax/)
 
-## Sources
-- [ATO resident tax rates 2025-26](https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents/)
-- [ATO Medicare levy reduction](https://www.ato.gov.au/individuals-and-families/medicare-and-private-health-insurance/medicare-levy/medicare-levy-reduction/medicare-levy-reduction-for-low-income-earners)
-- [ATO GST overview](https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst)
+## Hourly rates
+- [$50/hour](https://au-freelance-pay-calc.netlify.app/50-hourly-rate/)
+- [$60/hour](https://au-freelance-pay-calc.netlify.app/60-hourly-rate/)
+- [$70/hour](https://au-freelance-pay-calc.netlify.app/70-hourly-rate/)
+- [$80/hour](https://au-freelance-pay-calc.netlify.app/80-hourly-rate/)
+- [$90/hour](https://au-freelance-pay-calc.netlify.app/90-hourly-rate/)
+- [$100/hour](https://au-freelance-pay-calc.netlify.app/100-hourly-rate/)
+- [$110/hour](https://au-freelance-pay-calc.netlify.app/110-hourly-rate/)
+- [$120/hour](https://au-freelance-pay-calc.netlify.app/120-hourly-rate/)
+- [$130/hour](https://au-freelance-pay-calc.netlify.app/130-hourly-rate/)
+- [$140/hour](https://au-freelance-pay-calc.netlify.app/140-hourly-rate/)
+- [$150/hour](https://au-freelance-pay-calc.netlify.app/150-hourly-rate/)
+- [$160/hour](https://au-freelance-pay-calc.netlify.app/160-hourly-rate/)
+- [$170/hour](https://au-freelance-pay-calc.netlify.app/170-hourly-rate/)
+- [$180/hour](https://au-freelance-pay-calc.netlify.app/180-hourly-rate/)
+- [$190/hour](https://au-freelance-pay-calc.netlify.app/190-hourly-rate/)
+- [$200/hour](https://au-freelance-pay-calc.netlify.app/200-hourly-rate/)

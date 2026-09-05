@@ -1,69 +1,50 @@
 # AU Freelancer Money Calculator
 
-Weekend wedge: day-rate ↔ annual ↔ estimated AU contractor take-home (FY2025–26).
+Day-rate, hourly-rate, employee salary and target take-home calculator for Australia. The default is FY2026–27, with FY2025–26 selectable.
 
-## Live URL
+Live: **https://au-freelance-pay-calc.netlify.app/**
 
-**https://au-freelance-pay-calc.netlify.app/**
+## Included
 
-- Netlify: robots.txt `Allow: /` (SEO unblocked), Netlify Forms capturing the lead form.
-- Legacy Surge mirror: https://au-freelancer-calc-e23a.surge.sh/ (robots locked to Disallow on `*.surge.sh` — do not use for SEO/GSC).
+- Day rate, annual contractor revenue, target weekly take-home, employee salary and hourly modes.
+- FY2026–27 / FY2025–26 URL and local-storage state.
+- GST inclusive/exclusive calculations, 220 default billable days and configurable hours per day.
+- Deductions, Medicare, optional HELP/HECS, contractor super set-aside and employee super on top.
+- 23 day-rate, 11 employee-salary and 16 hourly-rate preset pages, plus preset index, methodology and custom 404.
+- Netlify Forms tips-list capture and Plausible events: `calc_change`, `mode_change`, `print`, `lead_submit`.
 
-## What’s included
+## Formula sources and disclaimer
 
-- Single-page calculator (vanilla HTML/CSS/JS)
-  - Modes: day rate, annual revenue, **target take-home** (reverse-solves the day rate)
-  - GST inclusive / exclusive toggle (10%), billable days (default **220**)
-  - Optional **deductions** input (reduces taxable income)
-  - **Super set-aside** cards (12% SG-equivalent, informational — not deducted)
-  - Outputs: annual/weekly/day equivalents, GST component, income tax, Medicare levy, take-home, take-home after super
-  - **Shareable URL state** (`?mode=&amount=&days=&gst=&ded=`) + home-page session restore (localStorage)
-  - Print / save-PDF cheat-sheet view
-- **34 SEO variant pages** + home = **35 URLs** in `sitemap.xml`, each with baked neighbour comparison tables
-- `robots.txt`, `sitemap.xml`, `llms.txt`, og:image, favicon, FAQ/Breadcrumb/WebApplication JSON-LD
-- Email capture form — **live via Netlify Forms** (form name `lead`; dashboard → Forms)
+Rates live in `scripts/cfg.json`, the single source used by the Python and JavaScript engines. Last checked: 2026-09-05.
 
-## Formula sources / disclaimer
+| Item | FY2025–26 | FY2026–27 | Source |
+|---|---|---|---|
+| Resident brackets | 0 / 16% / 30% / 37% / 45% | 0 / 15% / 30% / 37% / 45% | [ATO resident rates](https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents/individual-income-tax-rates) |
+| Medicare levy | 2%; single shade $28,011–$35,013 | Same pair retained because a separate 2026–27 pair is not yet published | [ATO Medicare reduction](https://www.ato.gov.au/individuals-and-families/medicare-and-private-health-insurance/medicare-levy/medicare-levy-reduction/medicare-levy-reduction-for-low-income-earners) |
+| HELP marginal thresholds | $67,000 / $125,000 | $69,528 / $129,717 | [ATO study-loan rates](https://www.ato.gov.au/tax-rates-and-codes/study-and-training-support-loans-rates-and-repayment-thresholds) |
+| GST | 10% | 10% | [ATO GST](https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst) |
+| Super | 12% | 12% | SG-equivalent planning amount |
 
-Rates live in `scripts/cfg.json` (single source of truth — drives `config.js`, `calc.js` and `taxlib.py`). **Last checked: 2026-08-22.**
+Estimate only, not tax, financial or legal advice. MLS, tax offsets, family/SAPTO thresholds and company/PSI structures are excluded.
 
-| Item | Value | Source |
-|------|-------|--------|
-| Resident tax brackets FY2025–26 | 0 / 16% / 30% / 37% / 45% with ATO cumulative bases | [ATO resident tax rates](https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents/) |
-| Medicare levy | 2%, single low-income shade $28,011 / $35,013 | [ATO Medicare levy reduction](https://www.ato.gov.au/individuals-and-families/medicare-and-private-health-insurance/medicare-levy/medicare-levy-reduction/medicare-levy-reduction-for-low-income-earners) |
-| GST | 10% | [ATO GST](https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst) |
-| Super set-aside (informational) | 12% SG-equivalent | — |
-
-**Assumptions (estimate only, not advice):** taxable income ≈ GST-exclusive revenue minus deductions; no HELP/HECS, MLS, offsets, family/SAPTO Medicare thresholds, or company/PSI structures; super shown separately, not deducted.
-
-## Regenerate + deploy
+## Development
 
 ```bash
-python3 scripts/generate_site.py          # parity pre-flight, then bakes public/
-netlify deploy --prod --dir=public        # repo is linked to the au-freelance-pay-calc site
+python3 scripts/check_parity.py
+python3 scripts/generate_site.py
 ```
 
-- `generate_site.py --base-url https://…` overrides canonical/sitemap origin; the build **fails** if `SITE_URL_PLACEHOLDER` survives into `public/`.
-- `scripts/check_parity.py` (auto-run pre-flight): JS engine vs Python engine over 208 cases — brackets, Medicare shade edges, GST modes, deductions, reverse-solver targets.
-- Keep the form `action="/"` (same-origin) — an external `action` silently defeats Netlify form detection. JS reroutes to Formspree if a real ID is ever set in `cfg.json`.
+Never edit `public/` by hand; it is generated. The generator runs the parity gate and fails when `default_fy` is stale after the following 1 July.
 
-## GSC next steps for Ian
+## Deploying
 
-1. [Google Search Console](https://search.google.com/search-console) → add property `https://au-freelance-pay-calc.netlify.app/`, verify.
-2. Sitemaps → submit `/sitemap.xml` (35 URLs).
-3. Spot-check `/800-day-rate/` and `/80000-salary-after-tax/` with URL Inspection.
-4. Optional: custom domain later; update `cfg.json base_url` + regen + redeploy.
+Netlify reads the root `netlify.toml`:
 
-## Paths
+- build command: `python3 scripts/generate_site.py`
+- publish directory: `public`
+- deploy previews: enable for pull requests in Netlify
+- production: merge an approved preview PR to `main`; Netlify then auto-deploys
 
-```
-scripts/
-  cfg.json           # rates + site config (single source of truth)
-  generate_site.py   # orchestrator: parity pre-flight → bake → placeholder guard
-  make_specs.py / write_page.py / write_meta.py
-  taxlib.py          # Python engine (+ preset lists)
-  embedded/          # calc.js, app.js, styles.css, favicon.svg, og.png, _headers
-  check_parity.py + calc_runner.js
-  make_og_image.py   # regenerate og.png (PIL)
-public/              # deploy root (generated)
-```
+The site is linked locally as Netlify site `92289150-c169-4786-b2a4-1fbff973a560`. Confirm the GitHub repository link and Deploy Preview setting in the Netlify dashboard. Do not use manual `netlify deploy --prod` as the normal release path.
+
+Before go-live or domain cutover, verify Plausible receives a real event from the deploy preview and production. Submit the regenerated sitemap to Search Console only after that check.
