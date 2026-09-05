@@ -9,4 +9,4 @@ Allow: /
 # User-agent: Google-Extended
 # Allow: /
 
-Sitemap: https://au-freelancer-calc-e23a.surge.sh/sitemap.xml
+Sitemap: https://au-freelance-pay-calc.netlify.app/sitemap.xml

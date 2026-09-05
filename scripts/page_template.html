@@ -129,7 +129,9 @@ __FAQ_JSON_LD__
     <section class="card">
       <h2>Get the contractor rate cheat-sheet</h2>
       <p class="sub" style="margin-bottom:12px">Occasional tips for AU freelancers. No spam. Unsubscribe anytime.</p>
-      <form id="lead-form" name="lead" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="__FORMSPREE__">
+      <form id="lead-form" name="lead" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/">
+        <!-- netlify-forms: lead -->
+        <!-- action stays same-origin so Netlify Forms detection works and no-JS submissions land in Netlify; app.js reroutes to Formspree via fetch when a real form ID is configured. -->
         <div class="grid grid-2">
           <div>
             <label for="name">Name (optional)</label>

@@ -31,7 +31,7 @@ def main():
     subprocess.check_call([sys.executable, str(HERE / "check_parity.py")], env=env)
 
     PUBLIC.mkdir(parents=True, exist_ok=True)
-    for name in ("styles.css", "calc.js", "app.js", "favicon.svg", "og.png"):
+    for name in ("styles.css", "calc.js", "app.js", "favicon.svg", "og.png", "_headers"):
         shutil.copy2(EMBED / name, PUBLIC / name)
     cfg = json.loads((HERE / "cfg.json").read_text(encoding="utf-8"))
     (PUBLIC / "config.js").write_text(
