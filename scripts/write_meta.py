@@ -1,8 +1,9 @@
 from pathlib import Path
-import json
+import json, os
 ROOT = Path(__file__).resolve().parent.parent
 PUB = ROOT / "public"
-host = "https://SITE_URL_PLACEHOLDER"
+cfg = json.loads((ROOT / "scripts" / "cfg.json").read_text())
+host = os.environ.get("SITE_BASE_URL", cfg["base_url"]).rstrip("/")
 days = list(range(400, 1550, 50))
 sals = [60000, 70000, 80000, 90000, 100000, 110000, 120000, 130000, 150000, 180000, 200000]
 urls = ["/"] + [f"/{r}-day-rate/" for r in days] + [f"/{s}-salary-after-tax/" for s in sals]

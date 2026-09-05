@@ -50,5 +50,5 @@ window.AU_CALC_CONFIG = {
   "formspree_endpoint": "https://formspree.io/f/YOUR_FORM_ID",
   "site_name": "AU Freelancer Calc",
   "site_tagline": "Day rate to annual to take-home (AU contractor estimate)",
-  "base_url_placeholder": "https://SITE_URL_PLACEHOLDER"
+  "base_url": "https://au-freelancer-calc-e23a.surge.sh"
 };

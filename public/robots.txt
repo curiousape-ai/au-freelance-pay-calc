@@ -9,4 +9,4 @@ Allow: /
 # User-agent: Google-Extended
 # Allow: /
 
-Sitemap: https://SITE_URL_PLACEHOLDER/sitemap.xml
+Sitemap: https://au-freelancer-calc-e23a.surge.sh/sitemap.xml

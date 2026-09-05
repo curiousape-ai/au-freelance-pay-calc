@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, html as H, sys
+import json, html as H, os, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import taxlib as T
@@ -12,7 +12,8 @@ SOURCES = "\n".join(
     f'<li><a href="{H.escape(s["url"])}" rel="noopener" target="_blank">{H.escape(s["label"])}</a></li>'
     for s in CFG["sources"]
 )
-FY, DAYS, BASE = CFG["fy"], CFG["default_days"], CFG["base_url_placeholder"]
+FY, DAYS = CFG["fy"], CFG["default_days"]
+BASE = os.environ.get("SITE_BASE_URL", CFG["base_url"]).rstrip("/")
 
 
 def faqs(mode, amount, r, example):
