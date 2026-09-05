@@ -2,6 +2,7 @@
   "fy": "2025-26",
   "last_checked": "2026-08-22",
   "gst_rate": 0.1,
+  "sg_rate": 0.12,
   "medicare_levy": 0.02,
   "medicare_lower": 28011,
   "medicare_upper": 35013,

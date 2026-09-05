@@ -5,6 +5,7 @@
   const gstBtns = document.querySelectorAll('[data-gst]');
   const amountEl = $('#amount');
   const daysEl = $('#days');
+  const dedEl = $('#deductions');
   const amountLabel = $('#amount-label');
   const CFG = window.AU_CALC_CONFIG;
 
@@ -40,7 +41,7 @@
   function sync() {
     const state = {
       mode, gst: gstInclusive ? 'inc' : 'ex',
-      amount: amountEl.value, days: daysEl.value,
+      amount: amountEl.value, days: daysEl.value, ded: dedEl.value,
     };
     const qs = new URLSearchParams(state).toString();
     try {
@@ -52,7 +53,8 @@
   function recalc() {
     const amount = parseFloat(amountEl.value) || 0;
     const days = parseFloat(daysEl.value) || CFG.default_days;
-    const r = window.AUCalc.calculate({ mode, amount, days, gstInclusive });
+    const deductions = parseFloat(dedEl.value) || 0;
+    const r = window.AUCalc.calculate({ mode, amount, days, gstInclusive, deductions });
     const F = window.AUCalc;
     $('#out-annual-ex').textContent = F.fmtAUD(r.annualEx);
     $('#out-annual-inc').textContent = F.fmtAUD(r.annualIncl);
@@ -66,6 +68,8 @@
     $('#out-takehome-week').textContent = F.fmtAUD(r.weeklyTakeHome);
     $('#out-eff').textContent = F.fmtPct(r.effectiveRate);
     $('#out-days').textContent = String(r.days);
+    $('#out-super').textContent = F.fmtAUD(r.superSetAside);
+    $('#out-takehome-super').textContent = F.fmtAUD(r.takeHomeAfterSuper);
     sync();
   }
 
@@ -73,6 +77,7 @@
   gstBtns.forEach(b => b.addEventListener('click', () => setGst(b.dataset.gst === 'inc')));
   amountEl.addEventListener('input', recalc);
   daysEl.addEventListener('input', recalc);
+  dedEl.addEventListener('input', recalc);
 
   // Initial inputs: query > saved (home) > preset baked into the page.
   amountEl.value = params.get('amount')
@@ -82,6 +87,9 @@
   daysEl.value = params.get('days')
     || (saved && saved.days)
     || String(CFG.default_days);
+  dedEl.value = params.get('ded')
+    || (saved && saved.ded)
+    || '0';
   setMode(mode);
   setGst(gstInclusive);
 

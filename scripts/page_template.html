@@ -64,9 +64,20 @@ __FAQ_JSON_LD__
           <input id="days" name="days" type="number" min="1" max="365" step="1" value="__DAYS__" />
         </div>
       </div>
+      <div class="grid grid-2" style="margin-top:12px">
+        <div>
+          <label for="deductions">Deductions / year (AUD, optional)</label>
+          <input id="deductions" name="deductions" type="number" min="0" step="100" inputmode="decimal" value="0" placeholder="0" />
+        </div>
+        <div>
+          <label>Super set-aside</label>
+          <p class="hint" style="margin:9px 0 0">Shown below at __SG_PCT__% of ex-GST income (SG-equivalent). Informational only — not deducted from the take-home figure.</p>
+        </div>
+      </div>
       <p class="disclaimer" style="margin-top:14px">
         Superannuation: many contractors invoice super separately or contribute personally.
-        This tool does <strong>not</strong> deduct SG/super from take-home — treat super as an extra cashflow item.
+        The super set-aside card shows an SG-equivalent __SG_PCT__% of ex-GST income;
+        the main take-home figure does <strong>not</strong> deduct it — treat super as an extra cashflow item.
       </p>
     </section>
 
@@ -82,10 +93,12 @@ __FAQ_JSON_LD__
         <div class="stat"><div class="k">Income tax</div><div class="v" id="out-tax">__V_TAX__</div><div class="hint">Resident brackets FY__FY__</div></div>
         <div class="stat"><div class="k">Medicare levy</div><div class="v" id="out-medicare">__V_MEDICARE__</div><div class="hint">2% with low-income shade</div></div>
         <div class="stat"><div class="k">Effective tax rate</div><div class="v" id="out-eff">__V_EFF__</div></div>
+        <div class="stat"><div class="k">Super set-aside (__SG_PCT__%)</div><div class="v" id="out-super">__V_SUPER__</div><div class="hint">SG-equivalent on ex-GST income · informational</div></div>
+        <div class="stat"><div class="k">Take-home after super</div><div class="v" id="out-takehome-super">__V_TAKE_SUPER__</div><div class="hint">If you set aside the super line</div></div>
         <div class="stat" style="grid-column:1/-1;border-color:rgba(61,214,198,.45)">
           <div class="k">Estimated take-home / year</div>
           <div class="v" id="out-takehome" style="color:var(--accent);font-size:1.8rem">__V_TAKE__</div>
-          <div class="hint">approx <span id="out-takehome-week">__V_TAKE_WEEK__</span> / week · no deductions, MLS, HELP, or private health surcharge modelled · Medicare family/SAPTO thresholds not modelled (single thresholds only)</div>
+          <div class="hint">approx <span id="out-takehome-week">__V_TAKE_WEEK__</span> / week · deductions entered above reduce taxable income · no MLS, HELP, or private health surcharge · Medicare family/SAPTO thresholds not modelled (single thresholds only)</div>
         </div>
       </div>
       <table class="baked">

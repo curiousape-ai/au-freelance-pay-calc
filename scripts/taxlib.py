@@ -27,9 +27,10 @@ def medicare_levy(taxable):
         return min((taxable - lower) * 0.10, taxable * rate)
     return taxable * rate
 
-def calculate(mode, amount, days=None, gst_inclusive=False):
+def calculate(mode, amount, days=None, gst_inclusive=False, deductions=0):
     days = days or CONFIG["default_days"]
     amount = float(amount) or 0.0
+    deductions = max(0.0, float(deductions or 0.0))
     r = CONFIG["gst_rate"]
     if gst_inclusive:
         ex = amount / (1 + r)
@@ -47,10 +48,12 @@ def calculate(mode, amount, days=None, gst_inclusive=False):
         day_ex = annual_ex / days if days else 0.0
         day_inc = annual_inc / days if days else 0.0
         day_gst = annual_gst / days if days else 0.0
-    tax = income_tax(annual_ex)
-    med = medicare_levy(annual_ex)
-    take = max(0.0, annual_ex - tax - med)
+    taxable = max(0.0, annual_ex - deductions)
+    tax = income_tax(taxable)
+    med = medicare_levy(taxable)
+    take = max(0.0, taxable - tax - med)
     total = tax + med
+    sg = annual_ex * CONFIG["sg_rate"]
     return {
         "days": days,
         "dayEx": day_ex,
@@ -59,14 +62,17 @@ def calculate(mode, amount, days=None, gst_inclusive=False):
         "annualEx": annual_ex,
         "annualIncl": annual_inc,
         "annualGst": annual_gst,
-        "taxable": annual_ex,
+        "deductions": deductions,
+        "taxable": taxable,
         "tax": tax,
         "medicare": med,
         "totalTax": total,
         "takeHome": take,
         "weeklyTakeHome": take / 52.0,
         "weeklyGrossEx": annual_ex / 52.0,
-        "effectiveRate": (total / annual_ex) if annual_ex else 0.0,
+        "effectiveRate": (total / taxable) if taxable else 0.0,
+        "superSetAside": sg,
+        "takeHomeAfterSuper": max(0.0, take - sg),
         "gstInclusive": gst_inclusive,
     }
 

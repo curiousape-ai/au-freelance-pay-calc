@@ -20,7 +20,8 @@ SALARIES = [60000, 70000, 80000, 90000, 100000, 110000, 120000, 130000, 150000, 
 EDGES = [0, 1, 18200, 18201, 28011, 28012, 35012, 35013, 45000, 45001, 135000, 135001, 190000, 190001, 10_000_000]
 DAY_COUNTS = [1, 220, 365]
 
-FIELDS = ["annualEx", "annualIncl", "annualGst", "tax", "medicare", "totalTax", "takeHome", "weeklyTakeHome", "effectiveRate"]
+FIELDS = ["annualEx", "annualIncl", "annualGst", "deductions", "taxable", "tax", "medicare", "totalTax",
+          "takeHome", "weeklyTakeHome", "effectiveRate", "superSetAside", "takeHomeAfterSuper"]
 
 
 def cases():
@@ -32,6 +33,10 @@ def cases():
     for s in SALARIES + EDGES:
         for inc in (False, True):
             out.append({"mode": "annual", "amount": s, "days": 220, "gstInclusive": inc})
+    # Deductions: typical, and deliberately exceeding income (taxable floors at 0).
+    for ded in (5000, 20000, 999999):
+        out.append({"mode": "day", "amount": 800, "days": 220, "gstInclusive": False, "deductions": ded})
+        out.append({"mode": "annual", "amount": 80000, "days": 220, "gstInclusive": False, "deductions": ded})
     return out
 
 
@@ -48,7 +53,7 @@ def main():
 
     bad = 0
     for c, j in zip(cs, js):
-        p = T.calculate(c["mode"], c["amount"], c["days"], c["gstInclusive"])
+        p = T.calculate(c["mode"], c["amount"], c["days"], c["gstInclusive"], c.get("deductions", 0))
         for f in FIELDS:
             if abs(j[f] - p[f]) > 0.01:
                 bad += 1

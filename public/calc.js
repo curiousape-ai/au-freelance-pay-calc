@@ -48,11 +48,13 @@
    * amount: day rate or annual (depending on gstInclusive interpretation for day rate)
    * days: billable days/year
    * gstInclusive: whether amount includes GST
+   * deductions: annual tax deductions (reduce taxable income)
    * For take-home we tax on GST-exclusive income (contractors remit GST; taxable income ≈ excl GST).
    */
-  function calculate({ mode, amount, days, gstInclusive }) {
+  function calculate({ mode, amount, days, gstInclusive, deductions }) {
     days = days || CFG.default_days;
     amount = Number(amount) || 0;
+    deductions = Math.max(0, Number(deductions) || 0);
     let dayRateInput = 0;
     let annualGrossInclOrAsEntered = 0;
     let dayEx, dayIncl, dayGst, annualEx, annualIncl, annualGst;
@@ -76,7 +78,7 @@
       dayGst = days ? annualGst / days : 0;
     }
 
-    const taxable = annualEx; // estimate: GST-exclusive revenue as taxable income (no deductions)
+    const taxable = Math.max(0, annualEx - deductions); // estimate: GST-exclusive revenue minus deductions (contractors remit GST)
     const tax = incomeTax(taxable);
     const medicare = medicareLevy(taxable);
     const totalTax = tax + medicare;
@@ -84,13 +86,17 @@
     const weeklyTakeHome = takeHome / 52;
     const weeklyGrossEx = annualEx / 52;
     const effectiveRate = taxable > 0 ? totalTax / taxable : 0;
+    const superSetAside = annualEx * CFG.sg_rate;
+    const takeHomeAfterSuper = Math.max(0, takeHome - superSetAside);
 
     return {
       days,
       dayEx, dayIncl, dayGst,
       annualEx, annualIncl, annualGst,
+      deductions,
       taxable, tax, medicare, totalTax, takeHome,
       weeklyTakeHome, weeklyGrossEx, effectiveRate,
+      superSetAside, takeHomeAfterSuper,
       gstInclusive
     };
   }

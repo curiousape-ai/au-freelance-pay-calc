@@ -26,7 +26,7 @@ def faqs(mode, amount, r, example):
             ("Which tax year and brackets does AU Freelancer Calc use?",
              f"ATO resident rates for FY{FY}: 0% to $18,200, 16% to $45,000, 30% to $135,000, 37% to $190,000, then 45%. Medicare 2% with shade ${lo:,} to ${hi:,}. Last checked {CFG['last_checked']}."),
             ("Does estimated take-home include GST, super, or HELP?",
-             "No. Taxable income is GST-exclusive revenue. Super, HELP/HECS, MLS, offsets and deductions are not modelled. Estimate only."),
+             f"GST is excluded from taxable income (contractors remit it). Super is shown separately as a {int(CFG['sg_rate']*100)}% SG-equivalent set-aside, not deducted from take-home. HELP/HECS, MLS, offsets are not modelled. Estimate only."),
             (f"Example: what does a {m(amount)} day rate come to after tax?",
              f"Labelled example {m(amount)}/day GST exclusive over {DAYS} days: annual {a(r['annualEx'])} (ex GST), income tax {a(r['tax'])}, Medicare {a(r['medicare'])}, take-home {a(r['takeHome'])}."),
             ("Is this official ATO tax advice?",
@@ -62,10 +62,10 @@ def faqs(mode, amount, r, example):
 def answer(mode, amount, r, example):
     m, a, a2 = T.money, T.fmt_aud, T.fmt_aud2
     if example:
-        return (f"Example (not a quote): a {m(amount)} GST-exclusive day rate over {DAYS} billable days is {a(r['annualEx'])} a year before tax. For an Australian resident in FY{FY}, estimated income tax is {a(r['tax'])} and the Medicare levy is {a(r['medicare'])} (2% after the low-income shade). That leaves take-home of about {a(r['takeHome'])}, or {a(r['weeklyTakeHome'])} per week. Change the inputs for your own rate. Super, HELP/HECS, MLS and deductions are not modelled. This is an estimate only — confirm with the ATO or a registered tax agent.")
+        return (f"Example (not a quote): a {m(amount)} GST-exclusive day rate over {DAYS} billable days is {a(r['annualEx'])} a year before tax. For an Australian resident in FY{FY}, estimated income tax is {a(r['tax'])} and the Medicare levy is {a(r['medicare'])} (2% after the low-income shade). That leaves take-home of about {a(r['takeHome'])}, or {a(r['weeklyTakeHome'])} per week. Change the inputs for your own rate — the deductions field reduces taxable income. HELP/HECS and MLS are not modelled; super is shown as a separate set-aside, not deducted. This is an estimate only — confirm with the ATO or a registered tax agent.")
     if mode == "day":
-        return (f"A {m(amount)} GST-exclusive contractor day rate over {DAYS} billable days is {a(r['annualEx'])} a year before tax (about {a(r['annualIncl'])} including 10% GST). For an Australian resident in FY{FY}, estimated income tax is {a(r['tax'])} and the Medicare levy is {a(r['medicare'])} (2% above the shade-out). That leaves take-home of about {a(r['takeHome'])}, or {a(r['weeklyTakeHome'])} per week. Super, HELP/HECS, MLS and deductions are not modelled. Confirm with the ATO or a registered tax agent — this is an estimate only, not advice.")
-    return (f"For a freelancer invoicing {m(amount)} a year (GST exclusive), estimated FY{FY} income tax for an Australian resident is {a(r['tax'])}, plus a Medicare levy of {a(r['medicare'])}. Estimated take-home is {a(r['takeHome'])} a year ({a(r['weeklyTakeHome'])} per week). At {DAYS} billable days that is about {a2(r['dayEx'])} per day exclusive of GST ({a2(r['dayIncl'])} including GST). This models contractor revenue, not a PAYG salary: employees also have tax withheld by their employer and super on top. No deductions, HELP, MLS or super are modelled. Estimate only — confirm with the ATO or a registered tax agent before you quote or budget.")
+        return (f"A {m(amount)} GST-exclusive contractor day rate over {DAYS} billable days is {a(r['annualEx'])} a year before tax (about {a(r['annualIncl'])} including 10% GST). For an Australian resident in FY{FY}, estimated income tax is {a(r['tax'])} and the Medicare levy is {a(r['medicare'])} (2% above the shade-out). That leaves take-home of about {a(r['takeHome'])}, or {a(r['weeklyTakeHome'])} per week. Use the deductions field to model business expenses. HELP/HECS and MLS are not modelled; super is shown as a separate set-aside, not deducted. Confirm with the ATO or a registered tax agent — this is an estimate only, not advice.")
+    return (f"For a freelancer invoicing {m(amount)} a year (GST exclusive), estimated FY{FY} income tax for an Australian resident is {a(r['tax'])}, plus a Medicare levy of {a(r['medicare'])}. Estimated take-home is {a(r['takeHome'])} a year ({a(r['weeklyTakeHome'])} per week). At {DAYS} billable days that is about {a2(r['dayEx'])} per day exclusive of GST ({a2(r['dayIncl'])} including GST). This models contractor revenue, not a PAYG salary: employees also have tax withheld by their employer and super on top. The deductions field reduces taxable income; HELP and MLS are not modelled; super is shown as a separate set-aside. Estimate only — confirm with the ATO or a registered tax agent before you quote or budget.")
 
 
 def main():
@@ -123,6 +123,8 @@ def main():
         "__V_DAY_INC__": T.fmt_aud2(r["dayIncl"]), "__V_WEEKLY__": T.fmt_aud(r["weeklyGrossEx"]),
         "__V_TAX__": T.fmt_aud(r["tax"]), "__V_MEDICARE__": T.fmt_aud(r["medicare"]),
         "__V_EFF__": T.fmt_pct(r["effectiveRate"]), "__V_TAKE__": T.fmt_aud(r["takeHome"]),
+        "__V_SUPER__": T.fmt_aud(r["superSetAside"]), "__V_TAKE_SUPER__": T.fmt_aud(r["takeHomeAfterSuper"]),
+        "__SG_PCT__": str(int(CFG["sg_rate"] * 100)),
         "__V_TAKE_WEEK__": T.fmt_aud(r["weeklyTakeHome"]), "__CAPTION__": H.escape(cap),
         "__FORMSPREE__": H.escape(CFG["formspree_endpoint"]), "__PRESETS__": PRESETS,
         "__FAQ_ITEMS__": faq_html, "__SOURCES__": SOURCES, "__LAST_CHECKED__": CFG["last_checked"],
