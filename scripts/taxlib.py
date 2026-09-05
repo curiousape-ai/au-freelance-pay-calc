@@ -76,6 +76,21 @@ def calculate(mode, amount, days=None, gst_inclusive=False, deductions=0):
         "gstInclusive": gst_inclusive,
     }
 
+def solve_day_rate_for_weekly_take_home(target_weekly, days=None, deductions=0):
+    """Reverse: weekly take-home target -> GST-exclusive day rate (bisection)."""
+    target_weekly = float(target_weekly) or 0.0
+    if target_weekly <= 0:
+        return 0.0
+    lo, hi = 0.0, 20000.0
+    for _ in range(80):
+        mid = (lo + hi) / 2
+        w = calculate("day", mid, days, False, deductions)["weeklyTakeHome"]
+        if w < target_weekly:
+            lo = mid
+        else:
+            hi = mid
+    return (lo + hi) / 2
+
 def money(n):
     return f"${n:,.0f}"
 

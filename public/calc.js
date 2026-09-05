@@ -101,6 +101,22 @@
     };
   }
 
+  /**
+   * Reverse: weekly take-home target -> required GST-exclusive day rate.
+   * Bisection on calculate(); take-home is monotonic in day rate.
+   */
+  function solveDayRateForWeeklyTakeHome(targetWeekly, days, deductions) {
+    targetWeekly = Number(targetWeekly) || 0;
+    if (targetWeekly <= 0) return 0;
+    let lo = 0, hi = 20000; // $20k/day is far beyond any bracket edge
+    for (let i = 0; i < 80; i++) {
+      const mid = (lo + hi) / 2;
+      const w = calculate({ mode: 'day', amount: mid, days, gstInclusive: false, deductions }).weeklyTakeHome;
+      if (w < targetWeekly) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+
   function fmtAUD(n) {
     return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 }).format(n || 0);
   }
@@ -111,5 +127,5 @@
     return (n * 100).toFixed(1) + '%';
   }
 
-  global.AUCalc = { calculate, incomeTax, medicareLevy, gstSplit, fmtAUD, fmtAUD2, fmtPct };
+  global.AUCalc = { calculate, solveDayRateForWeeklyTakeHome, incomeTax, medicareLevy, gstSplit, fmtAUD, fmtAUD2, fmtPct };
 })(window);

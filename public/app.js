@@ -23,11 +23,13 @@
   let gstInclusive = (params.get('gst') || (saved && saved.gst) || presetGst) === 'inc';
 
   function setMode(m) {
-    mode = m === 'annual' ? 'annual' : 'day';
+    mode = ['day', 'annual', 'target'].includes(m) ? m : 'day';
     modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-    amountLabel.textContent = mode === 'day' ? 'Day rate (AUD)' : 'Annual contractor revenue (AUD)';
+    amountLabel.textContent = mode === 'day' ? 'Day rate (AUD)'
+      : mode === 'annual' ? 'Annual contractor revenue (AUD)'
+      : 'Target weekly take-home (AUD)';
     if (!amountEl.value) {
-      amountEl.value = mode === 'day' ? '800' : '120000';
+      amountEl.value = mode === 'day' ? '800' : mode === 'annual' ? '120000' : '2000';
     }
     recalc();
   }
@@ -54,7 +56,19 @@
     const amount = parseFloat(amountEl.value) || 0;
     const days = parseFloat(daysEl.value) || CFG.default_days;
     const deductions = parseFloat(dedEl.value) || 0;
-    const r = window.AUCalc.calculate({ mode, amount, days, gstInclusive, deductions });
+    const solvedCard = $('#solved-card');
+    let r;
+    if (mode === 'target') {
+      // Solve on a GST-exclusive basis, then render the solved day rate.
+      const dayRate = window.AUCalc.solveDayRateForWeeklyTakeHome(amount, days, deductions);
+      r = window.AUCalc.calculate({ mode: 'day', amount: dayRate, days, gstInclusive: false, deductions });
+      solvedCard.style.display = '';
+      $('#out-solved').textContent = window.AUCalc.fmtAUD(dayRate) + ' /day';
+      $('#out-solved-inc').textContent = window.AUCalc.fmtAUD(dayRate * (1 + CFG.gst_rate));
+    } else {
+      r = window.AUCalc.calculate({ mode, amount, days, gstInclusive, deductions });
+      solvedCard.style.display = 'none';
+    }
     const F = window.AUCalc;
     $('#out-annual-ex').textContent = F.fmtAUD(r.annualEx);
     $('#out-annual-inc').textContent = F.fmtAUD(r.annualIncl);

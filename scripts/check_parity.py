@@ -37,6 +37,10 @@ def cases():
     for ded in (5000, 20000, 999999):
         out.append({"mode": "day", "amount": 800, "days": 220, "gstInclusive": False, "deductions": ded})
         out.append({"mode": "annual", "amount": 80000, "days": 220, "gstInclusive": False, "deductions": ded})
+    # Reverse solver: weekly take-home targets across brackets, with/without deductions.
+    for target in (500, 1000, 1500, 2424, 3000, 5000):
+        out.append({"mode": "solve", "amount": target, "days": 220, "deductions": 0})
+        out.append({"mode": "solve", "amount": target, "days": 200, "deductions": 15000})
     return out
 
 
@@ -53,6 +57,12 @@ def main():
 
     bad = 0
     for c, j in zip(cs, js):
+        if c["mode"] == "solve":
+            p = T.solve_day_rate_for_weekly_take_home(c["amount"], c["days"], c.get("deductions", 0))
+            if abs(j["solved"] - p) > 0.01:
+                bad += 1
+                print(f"MISMATCH {c} field=solved: js={j['solved']} py={p}")
+            continue
         p = T.calculate(c["mode"], c["amount"], c["days"], c["gstInclusive"], c.get("deductions", 0))
         for f in FIELDS:
             if abs(j[f] - p[f]) > 0.01:

@@ -109,6 +109,7 @@
         <div class="seg" role="group" aria-label="Input mode">
           <button type="button" data-mode="day" class="active">Day rate</button>
           <button type="button" data-mode="annual" class="">Annual</button>
+          <button type="button" data-mode="target" class="">Target take-home</button>
         </div>
         <div class="seg" role="group" aria-label="GST mode">
           <button type="button" data-gst="ex" class="active">GST exclusive</button>
@@ -146,6 +147,11 @@
     <section class="card">
       <h2>Results</h2>
       <div class="grid grid-3">
+        <div class="stat" id="solved-card" style="grid-column:1/-1;border-color:rgba(91,140,255,.45);display:none">
+          <div class="k">Required day rate to hit that take-home</div>
+          <div class="v" id="out-solved" style="color:var(--accent2);font-size:1.8rem">—</div>
+          <div class="hint">ex GST · inc GST ≈ <span id="out-solved-inc">—</span> /day · at the billable days and deductions above</div>
+        </div>
         <div class="stat"><div class="k">Annual (ex GST)</div><div class="v" id="out-annual-ex">$176,000</div><div class="hint">Taxable income estimate</div></div>
         <div class="stat"><div class="k">Annual (inc GST)</div><div class="v" id="out-annual-inc">$193,600</div><div class="hint">What clients may see</div></div>
         <div class="stat"><div class="k">GST / year</div><div class="v" id="out-gst-annual">$17,600</div><div class="hint">Remit via BAS (estimate)</div></div>
