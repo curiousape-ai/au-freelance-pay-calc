@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# AI crawlers welcome (explicit allow; no Disallow)
+# User-agent: GPTBot
+# Allow: /
+# User-agent: ClaudeBot
+# Allow: /
+# User-agent: Google-Extended
+# Allow: /
+
+Sitemap: https://SITE_URL_PLACEHOLDER/sitemap.xml
