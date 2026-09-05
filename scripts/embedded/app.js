@@ -12,7 +12,7 @@
   function setMode(m) {
     mode = m;
     modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === m));
-    amountLabel.textContent = m === 'day' ? 'Day rate (AUD)' : 'Annual income (AUD)';
+    amountLabel.textContent = m === 'day' ? 'Day rate (AUD)' : 'Annual contractor revenue (AUD)';
     if (!amountEl.value) {
       amountEl.value = m === 'day' ? '800' : '120000';
     }

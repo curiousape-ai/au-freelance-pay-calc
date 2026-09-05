@@ -46,14 +46,14 @@ def faqs(mode, amount, r, example):
              f"Default is {DAYS} billable days per year. Change the days field to remodel annual, tax, and take-home."),
         ]
     return [
-        (f"How much tax on a {m(amount)} salary in Australia (FY{FY})?",
+        (f"How much tax does a freelancer pay on {m(amount)} a year in Australia (FY{FY})?",
          f"For {m(amount)} taxable income with no deductions, income tax is {a(r['tax'])} plus Medicare {a(r['medicare'])} (combined {a(r['totalTax'])}, effective {p(r['effectiveRate'])})."),
         (f"What is take-home on {m(amount)} after tax and Medicare?",
          f"Estimated take-home is {a(r['takeHome'])} a year, or about {a(r['weeklyTakeHome'])} per week. Super, HELP/HECS, MLS and deductions are not modelled."),
         (f"What contractor day rate equals {m(amount)} at {DAYS} days?",
          f"At {DAYS} days, {m(amount)} GST exclusive is about {a2(r['dayEx'])}/day ex GST, or {a2(r['dayIncl'])} including GST."),
         (f"Does this {m(amount)} figure include GST?",
-         f"This preset treats {m(amount)} as GST-exclusive annual income. GST on the inc-GST equivalent would be {a(r['annualGst'])}."),
+         f"This preset treats {m(amount)} as GST-exclusive annual contractor revenue. GST on the inc-GST equivalent would be {a(r['annualGst'])}. Employee salaries never include GST — leave the toggle on exclusive for a salary-like comparison."),
         (f"Is the Medicare levy charged on {m(amount)}?",
          f"Yes in this estimate: above the FY{FY} shade-out of ${hi:,}, so Medicare is 2% = {a(r['medicare'])}."),
     ]
@@ -65,7 +65,7 @@ def answer(mode, amount, r, example):
         return (f"Example (not a quote): a {m(amount)} GST-exclusive day rate over {DAYS} billable days is {a(r['annualEx'])} a year before tax. For an Australian resident in FY{FY}, estimated income tax is {a(r['tax'])} and the Medicare levy is {a(r['medicare'])} (2% after the low-income shade). That leaves take-home of about {a(r['takeHome'])}, or {a(r['weeklyTakeHome'])} per week. Change the inputs for your own rate. Super, HELP/HECS, MLS and deductions are not modelled. This is an estimate only — confirm with the ATO or a registered tax agent.")
     if mode == "day":
         return (f"A {m(amount)} GST-exclusive contractor day rate over {DAYS} billable days is {a(r['annualEx'])} a year before tax (about {a(r['annualIncl'])} including 10% GST). For an Australian resident in FY{FY}, estimated income tax is {a(r['tax'])} and the Medicare levy is {a(r['medicare'])} (2% above the shade-out). That leaves take-home of about {a(r['takeHome'])}, or {a(r['weeklyTakeHome'])} per week. Super, HELP/HECS, MLS and deductions are not modelled. Confirm with the ATO or a registered tax agent — this is an estimate only, not advice.")
-    return (f"On {m(amount)} GST-exclusive annual income, an Australian resident's estimated income tax for FY{FY} is {a(r['tax'])}, plus a Medicare levy of {a(r['medicare'])}. Estimated take-home is {a(r['takeHome'])} a year ({a(r['weeklyTakeHome'])} per week). At {DAYS} billable days that is about {a2(r['dayEx'])} per day exclusive of GST ({a2(r['dayIncl'])} including GST). No deductions, HELP, MLS or super are modelled. This is an estimate only — confirm with the ATO or a registered tax agent before you quote or budget.")
+    return (f"For a freelancer invoicing {m(amount)} a year (GST exclusive), estimated FY{FY} income tax for an Australian resident is {a(r['tax'])}, plus a Medicare levy of {a(r['medicare'])}. Estimated take-home is {a(r['takeHome'])} a year ({a(r['weeklyTakeHome'])} per week). At {DAYS} billable days that is about {a2(r['dayEx'])} per day exclusive of GST ({a2(r['dayIncl'])} including GST). This models contractor revenue, not a PAYG salary: employees also have tax withheld by their employer and super on top. No deductions, HELP, MLS or super are modelled. Estimate only — confirm with the ATO or a registered tax agent before you quote or budget.")
 
 
 def main():
@@ -90,7 +90,9 @@ def main():
         "__PRESET_MODE__": mode, "__PRESET_AMOUNT__": str(int(amount)), "__PRESET_GST__": "ex",
         "__FY__": FY, "__H1__": H.escape(meta["h1"]), "__INTRO__": H.escape(meta["intro"]),
         "__ANSWER_HEADING__": head, "__ANSWER__": H.escape(answer(mode, amount, r, example)),
-        "__AMOUNT_LABEL__": "Day rate (AUD)" if mode == "day" else "Annual income (AUD)",
+        "__AMOUNT_LABEL__": "Day rate (AUD)" if mode == "day" else "Annual contractor revenue (AUD)",
+        "__GST_HINT__": ("Is your quoted day rate before GST (exclusive) or including GST?" if mode == "day"
+                         else "Enter revenue before GST. Employee salaries have no GST — leave this on exclusive for a salary comparison."),
         "__DAY_BTN__": "active" if mode == "day" else "", "__ANN_BTN__": "active" if mode == "annual" else "",
         "__EX_BTN__": "active", "__INC_BTN__": "", "__DAYS__": str(DAYS),
         "__V_ANNUAL_EX__": T.fmt_aud(r["annualEx"]), "__V_ANNUAL_INC__": T.fmt_aud(r["annualIncl"]),

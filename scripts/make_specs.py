@@ -31,10 +31,10 @@ for s in sals:
     specs.append({
         "mode": "annual", "amount": s, "path": f"/{s}-salary-after-tax/", "example": False,
         "outfile": str(PUB / f"{s}-salary-after-tax" / "index.html"),
-        "title": f"{money(s)} Salary After Tax (AU) — Freelancer Equivalent FY2025-26",
-        "h1": f"{money(s)} after-tax / annual calculator (AU)",
-        "desc": f"Estimate take-home on {money(s)} annual income for an Australian resident, plus day-rate equivalent at 220 billable days. FY2025-26 ATO brackets + Medicare.",
-        "intro": f"Preset: {money(s)} annual income (GST exclusive). Switch to day-rate mode to reverse-engineer your rate.",
+        "title": f"{money(s)} a Year After Tax (AU Freelancer) — Take-Home FY2025-26",
+        "h1": f"{money(s)} a year after tax (AU contractor estimate)",
+        "desc": f"Estimate take-home on {money(s)} a year as an Australian freelancer or contractor, plus the day-rate equivalent at 220 billable days. FY2025-26 ATO brackets + Medicare.",
+        "intro": f"Preset: {money(s)} annual contractor revenue (GST exclusive). This models freelancer income, not a PAYG salary — switch to day-rate mode to reverse-engineer your rate.",
     })
 for i, spec in enumerate(specs):
     p = OUT / f"{i:03d}.json"

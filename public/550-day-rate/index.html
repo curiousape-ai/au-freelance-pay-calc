@@ -93,6 +93,7 @@
           <button type="button" data-gst="inc" class="">GST inclusive</button>
         </div>
       </div>
+      <p class="hint" style="margin:-6px 0 12px">Is your quoted day rate before GST (exclusive) or including GST?</p>
       <div class="grid grid-2">
         <div>
           <label id="amount-label" for="amount">Day rate (AUD)</label>
@@ -124,7 +125,7 @@
         <div class="stat" style="grid-column:1/-1;border-color:rgba(61,214,198,.45)">
           <div class="k">Estimated take-home / year</div>
           <div class="v" id="out-takehome" style="color:var(--accent);font-size:1.8rem">$91,492</div>
-          <div class="hint">approx <span id="out-takehome-week">$1,759</span> / week · no deductions, MLS, HELP, or private health surcharge modelled</div>
+          <div class="hint">approx <span id="out-takehome-week">$1,759</span> / week · no deductions, MLS, HELP, or private health surcharge modelled · Medicare family/SAPTO thresholds not modelled (single thresholds only)</div>
         </div>
       </div>
       <table class="baked">
@@ -195,6 +196,7 @@
       <p class="disclaimer">
         This is an <strong>estimate only</strong>, not tax, financial, or legal advice.
         Actual tax depends on deductions, residency, HELP/HECS, Medicare levy surcharge, offsets, and your situation.
+        Medicare is modelled at single-person thresholds only — family and SAPTO thresholds are not included.
         Confirm figures with the ATO or a registered tax agent before making decisions.
       </p>
       <ul class="sources">
