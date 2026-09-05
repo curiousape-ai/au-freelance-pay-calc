@@ -1,6 +1,6 @@
 from pathlib import Path
 import json
-ROOT = Path("/workspace/au-freelancer-calc")
+ROOT = Path(__file__).resolve().parent.parent
 PUB = ROOT / "public"
 host = "https://SITE_URL_PLACEHOLDER"
 days = list(range(400, 1550, 50))

@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-PUB = Path("/workspace/au-freelancer-calc/public")
+PUB = Path(__file__).resolve().parent.parent / "public"
 OUT = Path("/tmp/pages")
 OUT.mkdir(exist_ok=True)
 rates = list(range(400, 1550, 50))
