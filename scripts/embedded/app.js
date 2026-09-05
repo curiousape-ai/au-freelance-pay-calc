@@ -6,27 +6,52 @@
   const amountEl = $('#amount');
   const daysEl = $('#days');
   const amountLabel = $('#amount-label');
-  let mode = document.body.dataset.presetMode || 'day';
-  let gstInclusive = (document.body.dataset.presetGst || 'ex') === 'inc';
+  const CFG = window.AU_CALC_CONFIG;
+
+  // --- State resolution: query > (home only) saved > preset -------------
+  // Variant pages keep their preset as the URL's promise; saved inputs are
+  // restored only on the home page.
+  const params = new URLSearchParams(location.search);
+  const isHome = /^\/(index\.html)?$/.test(location.pathname);
+  let saved = null;
+  try { saved = isHome ? JSON.parse(localStorage.getItem('aucalc') || 'null') : null; } catch (e) { /* ignore */ }
+  const presetMode = document.body.dataset.presetMode || 'day';
+  const presetGst = document.body.dataset.presetGst || 'ex';
+
+  let mode = params.get('mode') || (saved && saved.mode) || presetMode;
+  let gstInclusive = (params.get('gst') || (saved && saved.gst) || presetGst) === 'inc';
 
   function setMode(m) {
-    mode = m;
-    modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === m));
-    amountLabel.textContent = m === 'day' ? 'Day rate (AUD)' : 'Annual contractor revenue (AUD)';
+    mode = m === 'annual' ? 'annual' : 'day';
+    modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    amountLabel.textContent = mode === 'day' ? 'Day rate (AUD)' : 'Annual contractor revenue (AUD)';
     if (!amountEl.value) {
-      amountEl.value = m === 'day' ? '800' : '120000';
+      amountEl.value = mode === 'day' ? '800' : '120000';
     }
     recalc();
   }
   function setGst(inc) {
-    gstInclusive = inc;
-    gstBtns.forEach(b => b.classList.toggle('active', (b.dataset.gst === 'inc') === inc));
+    gstInclusive = !!inc;
+    gstBtns.forEach(b => b.classList.toggle('active', (b.dataset.gst === 'inc') === gstInclusive));
     recalc();
+  }
+
+  // Keep the URL shareable and persist the session (home restore).
+  function sync() {
+    const state = {
+      mode, gst: gstInclusive ? 'inc' : 'ex',
+      amount: amountEl.value, days: daysEl.value,
+    };
+    const qs = new URLSearchParams(state).toString();
+    try {
+      history.replaceState(null, '', location.pathname + '?' + qs);
+      localStorage.setItem('aucalc', JSON.stringify(state));
+    } catch (e) { /* file:// or privacy mode — non-fatal */ }
   }
 
   function recalc() {
     const amount = parseFloat(amountEl.value) || 0;
-    const days = parseFloat(daysEl.value) || window.AU_CALC_CONFIG.default_days;
+    const days = parseFloat(daysEl.value) || CFG.default_days;
     const r = window.AUCalc.calculate({ mode, amount, days, gstInclusive });
     const F = window.AUCalc;
     $('#out-annual-ex').textContent = F.fmtAUD(r.annualEx);
@@ -41,6 +66,7 @@
     $('#out-takehome-week').textContent = F.fmtAUD(r.weeklyTakeHome);
     $('#out-eff').textContent = F.fmtPct(r.effectiveRate);
     $('#out-days').textContent = String(r.days);
+    sync();
   }
 
   modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
@@ -48,10 +74,14 @@
   amountEl.addEventListener('input', recalc);
   daysEl.addEventListener('input', recalc);
 
-  // Apply preset from body dataset
-  if (document.body.dataset.presetAmount) {
-    amountEl.value = document.body.dataset.presetAmount;
-  }
+  // Initial inputs: query > saved (home) > preset baked into the page.
+  amountEl.value = params.get('amount')
+    || (saved && saved.amount)
+    || document.body.dataset.presetAmount
+    || '';
+  daysEl.value = params.get('days')
+    || (saved && saved.days)
+    || String(CFG.default_days);
   setMode(mode);
   setGst(gstInclusive);
 
@@ -64,7 +94,7 @@
       e.preventDefault();
       msg.textContent = '';
       msg.className = 'form-msg';
-      const endpoint = window.AU_CALC_CONFIG.formspree_endpoint;
+      const endpoint = CFG.formspree_endpoint;
       const fd = new FormData(form);
       const useFormspree = endpoint && !endpoint.includes('YOUR_FORM_ID');
       try {
