@@ -27,6 +27,9 @@ def main():
     if args.base_url:
         env["SITE_BASE_URL"] = args.base_url.rstrip("/")
 
+    # Pre-flight: the two tax engines must agree before we bake pages.
+    subprocess.check_call([sys.executable, str(HERE / "check_parity.py")], env=env)
+
     PUBLIC.mkdir(parents=True, exist_ok=True)
     for name in ("styles.css", "calc.js", "app.js"):
         shutil.copy2(EMBED / name, PUBLIC / name)
