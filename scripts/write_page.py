@@ -74,8 +74,30 @@ def main():
     example = bool(meta.get("example"))
     r = T.calculate(mode, amount, DAYS, False)
     faq = faqs(mode, amount, r, example)
-    ld = {"@context": "https://schema.org", "@type": "FAQPage",
-          "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]}
+    graph = [
+        {"@type": "FAQPage",
+         "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]}
+    ]
+    page_url = f"{BASE.rstrip('/')}{meta['path']}"
+    if example:
+        graph.append({
+            "@type": "WebApplication",
+            "name": CFG["site_name"],
+            "url": f"{BASE.rstrip('/')}/",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Any",
+            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "AUD"},
+            "description": meta["desc"],
+        })
+    else:
+        graph.append({
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Calculator", "item": f"{BASE.rstrip('/')}/"},
+                {"@type": "ListItem", "position": 2, "name": meta["h1"], "item": page_url},
+            ],
+        })
+    ld = {"@context": "https://schema.org", "@graph": graph}
     faq_html = "\n".join(f"<li><h3>{H.escape(q)}</h3><p>{H.escape(a)}</p></li>" for q, a in faq)
     if example:
         cap, head = f"Example snapshot — {T.money(amount)}/day GST exclusive, {DAYS} days (FY{FY} estimate). Cards above update if you change inputs.", "Quick answer (example)"
@@ -85,6 +107,7 @@ def main():
         cap, head = f"Preset snapshot — {T.money(amount)} annual GST exclusive, {DAYS} days (FY{FY} estimate). Cards above update if you change inputs.", "Quick answer"
     repl = {
         "__OG_TITLE__": H.escape(meta["title"]), "__OG_DESC__": H.escape(meta["desc"]),
+        "__OG_IMAGE__": H.escape(f"{BASE.rstrip('/')}/og.png"),
         "__CANONICAL__": H.escape(f"{BASE.rstrip('/')}{meta['path']}"),
         "__CONFIG_JSON__": json.dumps(CFG), "__FAQ_JSON_LD__": json.dumps(ld, ensure_ascii=False, indent=2),
         "__PRESET_MODE__": mode, "__PRESET_AMOUNT__": str(int(amount)), "__PRESET_GST__": "ex",

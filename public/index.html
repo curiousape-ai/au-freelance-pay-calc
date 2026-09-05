@@ -10,57 +10,79 @@
   <meta property="og:title" content="AU Freelancer Calculator — Day Rate to Take-Home (FY2025-26)" />
   <meta property="og:description" content="Convert AU contractor day rate to annual income with GST in/ex and estimated take-home using ATO FY2025-26 tax brackets and Medicare levy." />
   <meta property="og:url" content="https://au-freelancer-calc-e23a.surge.sh/" />
+  <meta property="og:image" content="https://au-freelancer-calc-e23a.surge.sh/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:locale" content="en_AU" />
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="AU Freelancer Calculator — Day Rate to Take-Home (FY2025-26)" />
   <meta name="twitter:description" content="Convert AU contractor day rate to annual income with GST in/ex and estimated take-home using ATO FY2025-26 tax brackets and Medicare levy." />
+  <meta name="twitter:image" content="https://au-freelancer-calc-e23a.surge.sh/og.png" />
   <meta name="robots" content="index,follow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="stylesheet" href="/styles.css" />
   <script>window.AU_CALC_CONFIG = {"fy": "2025-26", "last_checked": "2026-08-22", "gst_rate": 0.1, "medicare_levy": 0.02, "medicare_lower": 28011, "medicare_upper": 35013, "default_days": 220, "brackets": [{"up_to": 18200, "base": 0, "rate": 0.0}, {"up_to": 45000, "base": 0, "rate": 0.16}, {"up_to": 135000, "base": 4288, "rate": 0.3}, {"up_to": 190000, "base": 31288, "rate": 0.37}, {"up_to": null, "base": 51638, "rate": 0.45}], "sources": [{"label": "ATO resident tax rates 2025-26", "url": "https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents/"}, {"label": "ATO Medicare levy reduction (low-income thresholds)", "url": "https://www.ato.gov.au/individuals-and-families/medicare-and-private-health-insurance/medicare-levy/medicare-levy-reduction/medicare-levy-reduction-for-low-income-earners"}, {"label": "GST rate (10%) - ATO GST overview", "url": "https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst"}], "formspree_endpoint": "https://formspree.io/f/YOUR_FORM_ID", "site_name": "AU Freelancer Calc", "site_tagline": "Day rate to annual to take-home (AU contractor estimate)", "base_url": "https://au-freelancer-calc-e23a.surge.sh"};</script>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
+  "@graph": [
     {
-      "@type": "Question",
-      "name": "How do I convert an AU contractor day rate to annual income?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Multiply your GST-exclusive day rate by billable days. Default is 220 days. Example: $800 x 220 = $176,000 a year before tax."
-      }
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I convert an AU contractor day rate to annual income?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Multiply your GST-exclusive day rate by billable days. Default is 220 days. Example: $800 x 220 = $176,000 a year before tax."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which tax year and brackets does AU Freelancer Calc use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ATO resident rates for FY2025-26: 0% to $18,200, 16% to $45,000, 30% to $135,000, 37% to $190,000, then 45%. Medicare 2% with shade $28,011 to $35,013. Last checked 2026-08-22."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does estimated take-home include GST, super, or HELP?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Taxable income is GST-exclusive revenue. Super, HELP/HECS, MLS, offsets and deductions are not modelled. Estimate only."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Example: what does a $800 day rate come to after tax?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Labelled example $800/day GST exclusive over 220 days: annual $176,000 (ex GST), income tax $46,458, Medicare $3,520, take-home $126,022."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this official ATO tax advice?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Free estimate for AU freelancers, not tax advice. Confirm with the ATO or a registered tax agent."
+          }
+        }
+      ]
     },
     {
-      "@type": "Question",
-      "name": "Which tax year and brackets does AU Freelancer Calc use?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "ATO resident rates for FY2025-26: 0% to $18,200, 16% to $45,000, 30% to $135,000, 37% to $190,000, then 45%. Medicare 2% with shade $28,011 to $35,013. Last checked 2026-08-22."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Does estimated take-home include GST, super, or HELP?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No. Taxable income is GST-exclusive revenue. Super, HELP/HECS, MLS, offsets and deductions are not modelled. Estimate only."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Example: what does a $800 day rate come to after tax?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Labelled example $800/day GST exclusive over 220 days: annual $176,000 (ex GST), income tax $46,458, Medicare $3,520, take-home $126,022."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is this official ATO tax advice?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No. Free estimate for AU freelancers, not tax advice. Confirm with the ATO or a registered tax agent."
-      }
+      "@type": "WebApplication",
+      "name": "AU Freelancer Calc",
+      "url": "https://au-freelancer-calc-e23a.surge.sh/",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "AUD"
+      },
+      "description": "Convert AU contractor day rate to annual income with GST in/ex and estimated take-home using ATO FY2025-26 tax brackets and Medicare levy."
     }
   ]
 }
