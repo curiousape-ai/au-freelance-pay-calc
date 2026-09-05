@@ -4,6 +4,10 @@ from pathlib import Path
 # Single source of truth: scripts/cfg.json (same values served as config.js).
 CONFIG = json.loads((Path(__file__).resolve().parent / "cfg.json").read_text())
 
+# Preset page families (used by make_specs, write_meta, write_page).
+PRESET_DAY_RATES = list(range(400, 1550, 50))
+PRESET_SALARIES = [60000, 70000, 80000, 90000, 100000, 110000, 120000, 130000, 150000, 180000, 200000]
+
 def income_tax(taxable):
     taxable = float(taxable)
     if taxable <= 0:

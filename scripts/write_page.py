@@ -68,6 +68,34 @@ def answer(mode, amount, r, example):
     return (f"For a freelancer invoicing {m(amount)} a year (GST exclusive), estimated FY{FY} income tax for an Australian resident is {a(r['tax'])}, plus a Medicare levy of {a(r['medicare'])}. Estimated take-home is {a(r['takeHome'])} a year ({a(r['weeklyTakeHome'])} per week). At {DAYS} billable days that is about {a2(r['dayEx'])} per day exclusive of GST ({a2(r['dayIncl'])} including GST). This models contractor revenue, not a PAYG salary: employees also have tax withheld by their employer and super on top. The deductions field reduces taxable income; HELP and MLS are not modelled; super is shown as a separate set-aside. Estimate only — confirm with the ATO or a registered tax agent before you quote or budget.")
 
 
+def neighbours_html(mode, amount):
+    """Baked comparison table of nearby presets (±2 list positions), current row flagged."""
+    if mode == "day":
+        items, slug, label = T.PRESET_DAY_RATES, "/{v}-day-rate/", lambda v: f"{T.money(v)}/day"
+    else:
+        items, slug, label = T.PRESET_SALARIES, "/{v}-salary-after-tax/", lambda v: f"{T.money(v)}/yr"
+    if amount not in items:
+        return ""
+    i = items.index(amount)
+    window = items[max(0, i - 2): i + 3]
+    rows = []
+    for v in window:
+        r2 = T.calculate(mode, v, DAYS, False)
+        cur = ' class="current"' if v == amount else ""
+        cell = H.escape(label(v)) if v == amount else f'<a href="{slug.format(v=v)}">{H.escape(label(v))}</a>'
+        rows.append(
+            f"<tr{cur}><td>{cell}</td><td>{T.fmt_aud(r2['annualEx'])}</td>"
+            f"<td>{T.fmt_aud(r2['tax'])}</td><td>{T.fmt_aud(r2['medicare'])}</td><td>{T.fmt_aud(r2['takeHome'])}</td></tr>"
+        )
+    head = "Day rate (ex GST)" if mode == "day" else "Annual (ex GST)"
+    return (
+        '<table class="baked neighbours"><caption>Nearby presets compared (GST exclusive, '
+        f'{DAYS} days, FY{FY} estimate).</caption>'
+        f'<thead><tr><th>{head}</th><th>Annual ex GST</th><th>Income tax</th><th>Medicare</th><th>Take-home</th></tr></thead>'
+        f"<tbody>{''.join(rows)}</tbody></table>"
+    )
+
+
 def main():
     meta = json.loads(Path(sys.argv[1]).read_text())
     mode, amount = meta["mode"], float(meta["amount"])
@@ -127,6 +155,7 @@ def main():
         "__SG_PCT__": str(int(CFG["sg_rate"] * 100)),
         "__V_TAKE_WEEK__": T.fmt_aud(r["weeklyTakeHome"]), "__CAPTION__": H.escape(cap),
         "__FORMSPREE__": H.escape(CFG["formspree_endpoint"]), "__PRESETS__": PRESETS,
+        "__NEIGHBOURS__": "" if example else neighbours_html(mode, int(amount)),
         "__FAQ_ITEMS__": faq_html, "__SOURCES__": SOURCES, "__LAST_CHECKED__": CFG["last_checked"],
     }
     out = TPL

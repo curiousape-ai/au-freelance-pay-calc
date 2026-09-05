@@ -1,11 +1,13 @@
 from pathlib import Path
-import json, os
+import json, os, sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from taxlib import PRESET_DAY_RATES, PRESET_SALARIES
 ROOT = Path(__file__).resolve().parent.parent
 PUB = ROOT / "public"
 cfg = json.loads((ROOT / "scripts" / "cfg.json").read_text())
 host = os.environ.get("SITE_BASE_URL", cfg["base_url"]).rstrip("/")
-days = list(range(400, 1550, 50))
-sals = [60000, 70000, 80000, 90000, 100000, 110000, 120000, 130000, 150000, 180000, 200000]
+days = PRESET_DAY_RATES
+sals = PRESET_SALARIES
 urls = ["/"] + [f"/{r}-day-rate/" for r in days] + [f"/{s}-salary-after-tax/" for s in sals]
 
 PUB.joinpath("robots.txt").write_text(

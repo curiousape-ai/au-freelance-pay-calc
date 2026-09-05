@@ -128,6 +128,9 @@ table.baked th {
   font-weight: 600;
 }
 table.baked td:last-child, table.baked th:last-child { text-align: right; font-weight: 700; }
+table.neighbours td, table.neighbours th { text-align: right; }
+table.neighbours td:first-child, table.neighbours th:first-child { text-align: left; }
+table.neighbours tr.current td { background: rgba(61,214,198,.08); font-weight: 700; }
 .faq-list { margin: 0; padding: 0; list-style: none; }
 .faq-list li { margin-bottom: 14px; }
 .faq-list h3 { font-size: 1rem; margin: 0 0 4px; }

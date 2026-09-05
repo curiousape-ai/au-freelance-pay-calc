@@ -1,10 +1,12 @@
-import json
+import json, sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from taxlib import PRESET_DAY_RATES, PRESET_SALARIES
 PUB = Path(__file__).resolve().parent.parent / "public"
 OUT = Path("/tmp/pages")
 OUT.mkdir(exist_ok=True)
-rates = list(range(400, 1550, 50))
-sals = [60000, 70000, 80000, 90000, 100000, 110000, 120000, 130000, 150000, 180000, 200000]
+rates = PRESET_DAY_RATES
+sals = PRESET_SALARIES
 
 def money(n):
     return f"${n:,.0f}"
