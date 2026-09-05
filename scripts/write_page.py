@@ -1,170 +1,40 @@
 #!/usr/bin/env python3
-import json, html as H, os, sys
+import html as H,json,os,sys
+from datetime import date
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import taxlib as T
+sys.path.insert(0,str(Path(__file__).resolve().parent));import taxlib as T
+HERE=Path(__file__).resolve().parent;CFG=T.CONFIG;TPL=(HERE/"page_template.html").read_text();PRESETS=(HERE/"presets.html").read_text();FY=CFG["default_fy"];YC=CFG["years"][FY];DAYS=CFG["default_days"];BASE=os.environ.get("SITE_BASE_URL",CFG["base_url"]).rstrip("/")
+SOURCES="\n".join(f'<li><a href="{H.escape(s["url"])}" rel="noopener" target="_blank">{H.escape(s["label"])}</a></li>' for s in CFG["sources"])
 
-HERE = Path(__file__).resolve().parent
-CFG = json.loads((HERE / "cfg.json").read_text())
-TPL = (HERE / "page_template.html").read_text()
-PRESETS = (HERE / "presets.html").read_text()
-SOURCES = "\n".join(
-    f'<li><a href="{H.escape(s["url"])}" rel="noopener" target="_blank">{H.escape(s["label"])}</a></li>'
-    for s in CFG["sources"]
-)
-FY, DAYS = CFG["fy"], CFG["default_days"]
-BASE = os.environ.get("SITE_BASE_URL", CFG["base_url"]).rstrip("/")
+def answer(mode,amount,r):
+  if mode=="employee":
+    eq=T.solve_contractor_day_rate_for_employee_salary(amount,DAYS,0,FY)
+    return f"A {T.money(amount)} employee salary leaves an estimated {T.fmt_aud(r['takeHome'])} after resident income tax and Medicare in FY{FY}. Employer super is {T.fmt_aud(r['employerSuper'])} on top. A contractor would need about {T.fmt_aud(eq)}/day ex GST over {DAYS} days for the same take-home."
+  unit="hour" if mode=="hourly" else "day" if mode=="day" else "year"
+  return f"At {T.money(amount)} per {unit}, estimated GST-exclusive revenue is {T.fmt_aud(r['annualEx'])}. Resident income tax is {T.fmt_aud(r['tax'])}, Medicare is {T.fmt_aud(r['medicare'])}, and take-home is about {T.fmt_aud(r['takeHome'])} ({T.fmt_aud(r['weeklyTakeHome'])}/week) in FY{FY}."
 
+def faqs(mode,amount,r):
+  return [("Which financial year does this use?",f"Baked figures use FY{FY}. Use the financial-year switch to compare FY2025-26."),("How is take-home calculated?",f"GST-exclusive revenue minus deductions, resident income tax, Medicare and an optional HELP repayment. The default is {DAYS} billable days."),("Does this include super?","For contractors, 12% is shown as a voluntary set-aside. For employees, 12% employer super is shown on top of salary."),("Is this tax advice?","No. It is an estimate for planning. Confirm your circumstances with the ATO or a registered tax agent.")]
 
-def faqs(mode, amount, r, example):
-    m, a, a2, p = T.money, T.fmt_aud, T.fmt_aud2, T.fmt_pct
-    lo, hi = CFG["medicare_lower"], CFG["medicare_upper"]
-    if example:
-        return [
-            ("How do I convert an AU contractor day rate to annual income?",
-             f"Multiply your GST-exclusive day rate by billable days. Default is {DAYS} days. Example: {m(amount)} x {DAYS} = {a(r['annualEx'])} a year before tax."),
-            ("Which tax year and brackets does AU Freelancer Calc use?",
-             f"ATO resident rates for FY{FY}: 0% to $18,200, 16% to $45,000, 30% to $135,000, 37% to $190,000, then 45%. Medicare 2% with shade ${lo:,} to ${hi:,}. Last checked {CFG['last_checked']}."),
-            ("Does estimated take-home include GST, super, or HELP?",
-             f"GST is excluded from taxable income (contractors remit it). Super is shown separately as a {int(CFG['sg_rate']*100)}% SG-equivalent set-aside, not deducted from take-home. HELP/HECS, MLS, offsets are not modelled. Estimate only."),
-            (f"Example: what does a {m(amount)} day rate come to after tax?",
-             f"Labelled example {m(amount)}/day GST exclusive over {DAYS} days: annual {a(r['annualEx'])} (ex GST), income tax {a(r['tax'])}, Medicare {a(r['medicare'])}, take-home {a(r['takeHome'])}."),
-            ("Is this official ATO tax advice?",
-             "No. Free estimate for AU freelancers, not tax advice. Confirm with the ATO or a registered tax agent."),
-        ]
-    if mode == "day":
-        return [
-            (f"How much is a {m(amount)} day rate annually in Australia?",
-             f"At {DAYS} billable days, {m(amount)} GST exclusive is {a(r['annualEx'])} a year before tax, or {a(r['annualIncl'])} including 10% GST ({a(r['annualGst'])} GST)."),
-            (f"What income tax applies to a {m(amount)}/day contractor rate (FY{FY})?",
-             f"Treating {a(r['annualEx'])} GST-exclusive revenue as taxable income with no deductions, resident income tax is about {a(r['tax'])} using ATO FY{FY} brackets."),
-            (f"What is estimated take-home on {m(amount)} per day?",
-             f"After {a(r['tax'])} income tax and {a(r['medicare'])} Medicare levy, take-home is {a(r['takeHome'])}/year (about {a(r['weeklyTakeHome'])}/week). Effective rate {p(r['effectiveRate'])}."),
-            (f"Is the {m(amount)} day rate GST inclusive or exclusive on this page?",
-             f"This preset is GST exclusive. Toggle inclusive to model {m(amount)} inc-GST (ex-GST then about {a2(amount/1.10)}/day)."),
-            (f"How many billable days does this {m(amount)} calculator assume?",
-             f"Default is {DAYS} billable days per year. Change the days field to remodel annual, tax, and take-home."),
-        ]
-    return [
-        (f"How much tax does a freelancer pay on {m(amount)} a year in Australia (FY{FY})?",
-         f"For {m(amount)} taxable income with no deductions, income tax is {a(r['tax'])} plus Medicare {a(r['medicare'])} (combined {a(r['totalTax'])}, effective {p(r['effectiveRate'])})."),
-        (f"What is take-home on {m(amount)} after tax and Medicare?",
-         f"Estimated take-home is {a(r['takeHome'])} a year, or about {a(r['weeklyTakeHome'])} per week. Super, HELP/HECS, MLS and deductions are not modelled."),
-        (f"What contractor day rate equals {m(amount)} at {DAYS} days?",
-         f"At {DAYS} days, {m(amount)} GST exclusive is about {a2(r['dayEx'])}/day ex GST, or {a2(r['dayIncl'])} including GST."),
-        (f"Does this {m(amount)} figure include GST?",
-         f"This preset treats {m(amount)} as GST-exclusive annual contractor revenue. GST on the inc-GST equivalent would be {a(r['annualGst'])}. Employee salaries never include GST — leave the toggle on exclusive for a salary-like comparison."),
-        (f"Is the Medicare levy charged on {m(amount)}?",
-         f"Yes in this estimate: above the FY{FY} shade-out of ${hi:,}, so Medicare is 2% = {a(r['medicare'])}."),
-    ]
-
-
-def answer(mode, amount, r, example):
-    m, a, a2 = T.money, T.fmt_aud, T.fmt_aud2
-    if example:
-        return (f"Example (not a quote): a {m(amount)} GST-exclusive day rate over {DAYS} billable days is {a(r['annualEx'])} a year before tax. For an Australian resident in FY{FY}, estimated income tax is {a(r['tax'])} and the Medicare levy is {a(r['medicare'])} (2% after the low-income shade). That leaves take-home of about {a(r['takeHome'])}, or {a(r['weeklyTakeHome'])} per week. Change the inputs for your own rate — the deductions field reduces taxable income. HELP/HECS and MLS are not modelled; super is shown as a separate set-aside, not deducted. This is an estimate only — confirm with the ATO or a registered tax agent.")
-    if mode == "day":
-        return (f"A {m(amount)} GST-exclusive contractor day rate over {DAYS} billable days is {a(r['annualEx'])} a year before tax (about {a(r['annualIncl'])} including 10% GST). For an Australian resident in FY{FY}, estimated income tax is {a(r['tax'])} and the Medicare levy is {a(r['medicare'])} (2% above the shade-out). That leaves take-home of about {a(r['takeHome'])}, or {a(r['weeklyTakeHome'])} per week. Use the deductions field to model business expenses. HELP/HECS and MLS are not modelled; super is shown as a separate set-aside, not deducted. Confirm with the ATO or a registered tax agent — this is an estimate only, not advice.")
-    return (f"For a freelancer invoicing {m(amount)} a year (GST exclusive), estimated FY{FY} income tax for an Australian resident is {a(r['tax'])}, plus a Medicare levy of {a(r['medicare'])}. Estimated take-home is {a(r['takeHome'])} a year ({a(r['weeklyTakeHome'])} per week). At {DAYS} billable days that is about {a2(r['dayEx'])} per day exclusive of GST ({a2(r['dayIncl'])} including GST). This models contractor revenue, not a PAYG salary: employees also have tax withheld by their employer and super on top. The deductions field reduces taxable income; HELP and MLS are not modelled; super is shown as a separate set-aside. Estimate only — confirm with the ATO or a registered tax agent before you quote or budget.")
-
-
-def neighbours_html(mode, amount):
-    """Baked comparison table of nearby presets (±2 list positions), current row flagged."""
-    if mode == "day":
-        items, slug, label = T.PRESET_DAY_RATES, "/{v}-day-rate/", lambda v: f"{T.money(v)}/day"
-    else:
-        items, slug, label = T.PRESET_SALARIES, "/{v}-salary-after-tax/", lambda v: f"{T.money(v)}/yr"
-    if amount not in items:
-        return ""
-    i = items.index(amount)
-    window = items[max(0, i - 2): i + 3]
-    rows = []
-    for v in window:
-        r2 = T.calculate(mode, v, DAYS, False)
-        cur = ' class="current"' if v == amount else ""
-        cell = H.escape(label(v)) if v == amount else f'<a href="{slug.format(v=v)}">{H.escape(label(v))}</a>'
-        rows.append(
-            f"<tr{cur}><td>{cell}</td><td>{T.fmt_aud(r2['annualEx'])}</td>"
-            f"<td>{T.fmt_aud(r2['tax'])}</td><td>{T.fmt_aud(r2['medicare'])}</td><td>{T.fmt_aud(r2['takeHome'])}</td></tr>"
-        )
-    head = "Day rate (ex GST)" if mode == "day" else "Annual (ex GST)"
-    return (
-        '<table class="baked neighbours"><caption>Nearby presets compared (GST exclusive, '
-        f'{DAYS} days, FY{FY} estimate).</caption>'
-        f'<thead><tr><th>{head}</th><th>Annual ex GST</th><th>Income tax</th><th>Medicare</th><th>Take-home</th></tr></thead>'
-        f"<tbody>{''.join(rows)}</tbody></table>"
-    )
-
+def neighbours(mode,amount):
+  if mode=="day": items,path,label=T.PRESET_DAY_RATES,"/{v}-day-rate/",lambda v:f"{T.money(v)}/day"
+  elif mode=="employee": items,path,label=T.PRESET_SALARIES,"/{v}-salary-after-tax/",lambda v:f"{T.money(v)} salary"
+  elif mode=="hourly": items,path,label=T.PRESET_HOURLY_RATES,"/{v}-hourly-rate/",lambda v:f"{T.money(v)}/hour"
+  else:return""
+  if amount not in items:return""
+  i=items.index(amount);rows=[]
+  for v in items[max(0,i-2):i+3]:
+    rr=T.calculate(mode,v,DAYS,False,0,FY);name=H.escape(label(v)) if v==amount else f'<a href="{path.format(v=v)}">{H.escape(label(v))}</a>';rows.append(f'<tr><td>{name}</td><td>{T.fmt_aud(rr["annualEx"])}</td><td>{T.fmt_aud(rr["takeHome"])}</td></tr>')
+  return f'<table class="baked neighbours"><caption>Nearby FY{FY} presets</caption><thead><tr><th>Preset</th><th>Annual</th><th>Take-home</th></tr></thead><tbody>{"".join(rows)}</tbody></table>'
 
 def main():
-    meta = json.loads(Path(sys.argv[1]).read_text())
-    mode, amount = meta["mode"], float(meta["amount"])
-    example = bool(meta.get("example"))
-    r = T.calculate(mode, amount, DAYS, False)
-    faq = faqs(mode, amount, r, example)
-    graph = [
-        {"@type": "FAQPage",
-         "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]}
-    ]
-    page_url = f"{BASE.rstrip('/')}{meta['path']}"
-    if example:
-        graph.append({
-            "@type": "WebApplication",
-            "name": CFG["site_name"],
-            "url": f"{BASE.rstrip('/')}/",
-            "applicationCategory": "FinanceApplication",
-            "operatingSystem": "Any",
-            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "AUD"},
-            "description": meta["desc"],
-        })
-    else:
-        graph.append({
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-                {"@type": "ListItem", "position": 1, "name": "Calculator", "item": f"{BASE.rstrip('/')}/"},
-                {"@type": "ListItem", "position": 2, "name": meta["h1"], "item": page_url},
-            ],
-        })
-    ld = {"@context": "https://schema.org", "@graph": graph}
-    faq_html = "\n".join(f"<li><h3>{H.escape(q)}</h3><p>{H.escape(a)}</p></li>" for q, a in faq)
-    if example:
-        cap, head = f"Example snapshot — {T.money(amount)}/day GST exclusive, {DAYS} days (FY{FY} estimate). Cards above update if you change inputs.", "Quick answer (example)"
-    elif mode == "day":
-        cap, head = f"Preset snapshot — {T.money(amount)}/day GST exclusive, {DAYS} days (FY{FY} estimate). Cards above update if you change inputs.", "Quick answer"
-    else:
-        cap, head = f"Preset snapshot — {T.money(amount)} annual GST exclusive, {DAYS} days (FY{FY} estimate). Cards above update if you change inputs.", "Quick answer"
-    repl = {
-        "__OG_TITLE__": H.escape(meta["title"]), "__OG_DESC__": H.escape(meta["desc"]),
-        "__OG_IMAGE__": H.escape(f"{BASE.rstrip('/')}/og.png"),
-        "__CANONICAL__": H.escape(f"{BASE.rstrip('/')}{meta['path']}"),
-        "__CONFIG_JSON__": json.dumps(CFG), "__FAQ_JSON_LD__": json.dumps(ld, ensure_ascii=False, indent=2),
-        "__PRESET_MODE__": mode, "__PRESET_AMOUNT__": str(int(amount)), "__PRESET_GST__": "ex",
-        "__FY__": FY, "__H1__": H.escape(meta["h1"]), "__INTRO__": H.escape(meta["intro"]),
-        "__ANSWER_HEADING__": head, "__ANSWER__": H.escape(answer(mode, amount, r, example)),
-        "__AMOUNT_LABEL__": "Day rate (AUD)" if mode == "day" else "Annual contractor revenue (AUD)",
-        "__GST_HINT__": ("Is your quoted day rate before GST (exclusive) or including GST?" if mode == "day"
-                         else "Enter revenue before GST. Employee salaries have no GST — leave this on exclusive for a salary comparison."),
-        "__DAY_BTN__": "active" if mode == "day" else "", "__ANN_BTN__": "active" if mode == "annual" else "",
-        "__EX_BTN__": "active", "__INC_BTN__": "", "__DAYS__": str(DAYS),
-        "__V_ANNUAL_EX__": T.fmt_aud(r["annualEx"]), "__V_ANNUAL_INC__": T.fmt_aud(r["annualIncl"]),
-        "__V_GST__": T.fmt_aud(r["annualGst"]), "__V_DAY_EX__": T.fmt_aud2(r["dayEx"]),
-        "__V_DAY_INC__": T.fmt_aud2(r["dayIncl"]), "__V_WEEKLY__": T.fmt_aud(r["weeklyGrossEx"]),
-        "__V_TAX__": T.fmt_aud(r["tax"]), "__V_MEDICARE__": T.fmt_aud(r["medicare"]),
-        "__V_EFF__": T.fmt_pct(r["effectiveRate"]), "__V_TAKE__": T.fmt_aud(r["takeHome"]),
-        "__V_SUPER__": T.fmt_aud(r["superSetAside"]), "__V_TAKE_SUPER__": T.fmt_aud(r["takeHomeAfterSuper"]),
-        "__SG_PCT__": str(int(CFG["sg_rate"] * 100)),
-        "__V_TAKE_WEEK__": T.fmt_aud(r["weeklyTakeHome"]), "__CAPTION__": H.escape(cap),
-        "__FORMSPREE__": H.escape(CFG["formspree_endpoint"]), "__PRESETS__": PRESETS,
-        "__NEIGHBOURS__": "" if example else neighbours_html(mode, int(amount)),
-        "__FAQ_ITEMS__": faq_html, "__SOURCES__": SOURCES, "__LAST_CHECKED__": CFG["last_checked"],
-    }
-    out = TPL
-    for k, v in repl.items():
-        out = out.replace(k, v)
-    dest = Path(meta["outfile"])
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(out, encoding="utf-8")
-    print("wrote", dest)
-
-if __name__ == "__main__":
-    main()
+  meta=json.loads(Path(sys.argv[1]).read_text());mode=meta["mode"];amount=int(meta["amount"]);r=T.calculate(mode,amount,DAYS,False,0,FY);faq=faqs(mode,amount,r);page_url=BASE+meta["path"]
+  person={"@type":"Person","@id":BASE+"/#author","name":CFG["author"]["name"],"url":CFG["author"]["url"],"sameAs":CFG["author"]["same_as"]};org={"@type":"Organization","@id":BASE+"/#publisher","name":CFG["publisher"]["name"],"url":CFG["publisher"]["url"],"sameAs":CFG["publisher"]["same_as"]}
+  app={"@type":"WebApplication","@id":BASE+"/#calculator","name":CFG["site_name"],"url":page_url,"applicationCategory":"FinanceApplication","operatingSystem":"Any","dateModified":date.today().isoformat(),"author":{"@id":person["@id"]},"publisher":{"@id":org["@id"]},"offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"}}
+  faq_schema={"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}}for q,a in faq]};ld={"@context":"https://schema.org","@graph":[person,org,app,faq_schema]}
+  cap=f"Preset snapshot, FY{FY}. Interactive results update when inputs change.";a=answer(mode,amount,r)
+  repl={"__OG_TITLE__":H.escape(meta["title"]),"__OG_DESC__":H.escape(meta["desc"]),"__CANONICAL__":H.escape(page_url),"__OG_IMAGE__":H.escape(BASE+"/og.png"),"__FAQ_JSON_LD__":json.dumps(ld,ensure_ascii=False),"__ANALYTICS_DOMAIN__":H.escape(CFG["analytics_domain"]),"__PRESET_MODE__":mode,"__PRESET_AMOUNT__":str(amount),"__FY__":FY,"__H1__":H.escape(meta["h1"]),"__INTRO__":H.escape(meta["intro"]),"__ANSWER_HEADING__":"Quick answer (example)" if meta.get("example") else "Quick answer","__ANSWER__":H.escape(a),"__AMOUNT_LABEL__":"Employee salary (AUD)" if mode=="employee" else "Hourly rate (AUD)" if mode=="hourly" else "Day rate (AUD)","__GST_HINT__":"Employee salaries do not include GST." if mode=="employee" else "Choose whether the entered amount includes GST.","__DAYS__":str(DAYS),"__V_ANNUAL_EX__":T.fmt_aud(r["annualEx"]),"__V_ANNUAL_INC__":T.fmt_aud(r["annualIncl"]),"__V_GST__":T.fmt_aud(r["annualGst"]),"__V_DAY_EX__":T.fmt_aud2(r["dayEx"]),"__V_DAY_INC__":T.fmt_aud2(r["dayIncl"]),"__V_WEEKLY__":T.fmt_aud(r["weeklyGrossEx"]),"__V_TAX__":T.fmt_aud(r["tax"]),"__V_MEDICARE__":T.fmt_aud(r["medicare"]),"__V_EFF__":T.fmt_pct(r["effectiveRate"]),"__V_TAKE__":T.fmt_aud(r["takeHome"]),"__V_TAKE_WEEK__":T.fmt_aud(r["weeklyTakeHome"]),"__V_SUPER__":T.fmt_aud(r["employerSuper"] if mode=="employee" else r["superSetAside"]),"__V_TAKE_SUPER__":T.fmt_aud(r["takeHomeAfterSuper"]),"__SG_PCT__":str(int(CFG["sg_rate"]*100)),"__CAPTION__":cap,"__NEIGHBOURS__":neighbours(mode,amount),"__PRESETS__":PRESETS,"__FAQ_ITEMS__":"".join(f'<li><h3>{H.escape(q)}</h3><p>{H.escape(x)}</p></li>'for q,x in faq),"__SOURCES__":SOURCES,"__LAST_CHECKED__":YC["last_checked"],"__DATE_MODIFIED__":date.today().isoformat(),"__MEDICARE_NOTE__":H.escape(YC["medicare_note"])}
+  out=TPL
+  for k,v in repl.items():out=out.replace(k,v)
+  dest=Path(meta["outfile"]);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_text(out);print("wrote",dest)
+if __name__=="__main__":main()

@@ -1,268 +1,54 @@
-<!DOCTYPE html>
-<html lang="en-AU">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AU Freelancer Calculator — Day Rate to Take-Home (FY2025-26)</title>
-  <meta name="description" content="Convert AU contractor day rate to annual income with GST in/ex and estimated take-home using ATO FY2025-26 tax brackets and Medicare levy." />
-  <link rel="canonical" href="https://au-freelance-pay-calc.netlify.app/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="AU Freelancer Calculator — Day Rate to Take-Home (FY2025-26)" />
-  <meta property="og:description" content="Convert AU contractor day rate to annual income with GST in/ex and estimated take-home using ATO FY2025-26 tax brackets and Medicare levy." />
-  <meta property="og:url" content="https://au-freelance-pay-calc.netlify.app/" />
-  <meta property="og:image" content="https://au-freelance-pay-calc.netlify.app/og.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:locale" content="en_AU" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AU Freelancer Calculator — Day Rate to Take-Home (FY2025-26)" />
-  <meta name="twitter:description" content="Convert AU contractor day rate to annual income with GST in/ex and estimated take-home using ATO FY2025-26 tax brackets and Medicare levy." />
-  <meta name="twitter:image" content="https://au-freelance-pay-calc.netlify.app/og.png" />
-  <meta name="robots" content="index,follow" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="stylesheet" href="/styles.css" />
-  <script>window.AU_CALC_CONFIG = {"fy": "2025-26", "last_checked": "2026-08-22", "gst_rate": 0.1, "sg_rate": 0.12, "medicare_levy": 0.02, "medicare_lower": 28011, "medicare_upper": 35013, "default_days": 220, "brackets": [{"up_to": 18200, "base": 0, "rate": 0.0}, {"up_to": 45000, "base": 0, "rate": 0.16}, {"up_to": 135000, "base": 4288, "rate": 0.3}, {"up_to": 190000, "base": 31288, "rate": 0.37}, {"up_to": null, "base": 51638, "rate": 0.45}], "sources": [{"label": "ATO resident tax rates 2025-26", "url": "https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents/"}, {"label": "ATO Medicare levy reduction (low-income thresholds)", "url": "https://www.ato.gov.au/individuals-and-families/medicare-and-private-health-insurance/medicare-levy/medicare-levy-reduction/medicare-levy-reduction-for-low-income-earners"}, {"label": "GST rate (10%) - ATO GST overview", "url": "https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst"}], "formspree_endpoint": "https://formspree.io/f/YOUR_FORM_ID", "site_name": "AU Freelancer Calc", "site_tagline": "Day rate to annual to take-home (AU contractor estimate)", "base_url": "https://au-freelance-pay-calc.netlify.app"};</script>
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How do I convert an AU contractor day rate to annual income?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Multiply your GST-exclusive day rate by billable days. Default is 220 days. Example: $800 x 220 = $176,000 a year before tax."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Which tax year and brackets does AU Freelancer Calc use?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "ATO resident rates for FY2025-26: 0% to $18,200, 16% to $45,000, 30% to $135,000, 37% to $190,000, then 45%. Medicare 2% with shade $28,011 to $35,013. Last checked 2026-08-22."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does estimated take-home include GST, super, or HELP?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "GST is excluded from taxable income (contractors remit it). Super is shown separately as a 12% SG-equivalent set-aside, not deducted from take-home. HELP/HECS, MLS, offsets are not modelled. Estimate only."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Example: what does a $800 day rate come to after tax?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Labelled example $800/day GST exclusive over 220 days: annual $176,000 (ex GST), income tax $46,458, Medicare $3,520, take-home $126,022."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is this official ATO tax advice?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. Free estimate for AU freelancers, not tax advice. Confirm with the ATO or a registered tax agent."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "WebApplication",
-      "name": "AU Freelancer Calc",
-      "url": "https://au-freelance-pay-calc.netlify.app/",
-      "applicationCategory": "FinanceApplication",
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "AUD"
-      },
-      "description": "Convert AU contractor day rate to annual income with GST in/ex and estimated take-home using ATO FY2025-26 tax brackets and Medicare levy."
-    }
-  ]
-}
-  </script>
+<!doctype html>
+<html lang="en-AU"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day Rate Calculator Australia — Contractor Take-Home FY2026-27</title><meta name="description" content="Convert an Australian contractor day rate to annual revenue, GST and estimated FY2026-27 take-home."><link rel="canonical" href="https://au-freelance-pay-calc.netlify.app/">
+<meta property="og:type" content="website"><meta property="og:title" content="Day Rate Calculator Australia — Contractor Take-Home FY2026-27"><meta property="og:description" content="Convert an Australian contractor day rate to annual revenue, GST and estimated FY2026-27 take-home."><meta property="og:url" content="https://au-freelance-pay-calc.netlify.app/"><meta property="og:image" content="https://au-freelance-pay-calc.netlify.app/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/styles.css">
+<script nonce="auc-jsonld" type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Person", "@id": "https://au-freelance-pay-calc.netlify.app/#author", "name": "Ian Hunt", "url": "https://curiousape.au/", "sameAs": ["https://curiousape.au/", "https://www.linkedin.com/in/ijhunt/"]}, {"@type": "Organization", "@id": "https://au-freelance-pay-calc.netlify.app/#publisher", "name": "Curious Ape", "url": "https://curiousape.au/", "sameAs": ["https://curiousape.au/"]}, {"@type": "WebApplication", "@id": "https://au-freelance-pay-calc.netlify.app/#calculator", "name": "AU Freelancer Calc", "url": "https://au-freelance-pay-calc.netlify.app/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "dateModified": "2026-09-05", "author": {"@id": "https://au-freelance-pay-calc.netlify.app/#author"}, "publisher": {"@id": "https://au-freelance-pay-calc.netlify.app/#publisher"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "AUD"}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which financial year does this use?", "acceptedAnswer": {"@type": "Answer", "text": "Baked figures use FY2026-27. Use the financial-year switch to compare FY2025-26."}}, {"@type": "Question", "name": "How is take-home calculated?", "acceptedAnswer": {"@type": "Answer", "text": "GST-exclusive revenue minus deductions, resident income tax, Medicare and an optional HELP repayment. The default is 220 billable days."}}, {"@type": "Question", "name": "Does this include super?", "acceptedAnswer": {"@type": "Answer", "text": "For contractors, 12% is shown as a voluntary set-aside. For employees, 12% employer super is shown on top of salary."}}, {"@type": "Question", "name": "Is this tax advice?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is an estimate for planning. Confirm your circumstances with the ATO or a registered tax agent."}}]}]}</script>
+<script defer data-domain="au-freelance-pay-calc.netlify.app" src="https://plausible.io/js/script.js"></script>
 </head>
-<body data-preset-mode="day" data-preset-amount="800" data-preset-gst="ex">
-  <div class="wrap">
-    <header class="hero">
-      <div>
-        <div class="badge">FY2025-26 · Estimate only</div>
-        <h1>AU freelancer money calculator</h1>
-        <p class="sub">Free Australian freelancer calculator: convert day rate to annual, GST in/ex, and estimate contractor take-home using FY2025-26 ATO resident brackets + Medicare levy.</p>
-      </div>
-      <a class="ghost" href="/">Full calculator</a>
-    </header>
+<body data-preset-mode="day" data-preset-amount="800" data-preset-gst="ex" data-preset-fy="2026-27">
+<div class="wrap">
+<header class="hero"><div><div class="badge">FY<span id="badge-fy">2026-27</span> · Estimate only</div><h1>Contractor day rate calculator (Australia, FY2026-27)</h1><p class="sub">Compare contractor day rates, annual revenue, employee salary and target take-home with current Australian resident tax settings.</p></div><a class="ghost" href="/">Full calculator</a></header>
+<section class="card answer-first"><h2 id="answer-heading">Quick answer (example)</h2><p id="quick-answer">At $800 per day, estimated GST-exclusive revenue is $176,000. Resident income tax is $46,190, Medicare is $3,520, and take-home is about $126,290 ($2,429/week) in FY2026-27.</p></section>
 
-    <section class="card answer-first">
-      <h2>Quick answer (example)</h2>
-      <p>Example (not a quote): a $800 GST-exclusive day rate over 220 billable days is $176,000 a year before tax. For an Australian resident in FY2025-26, estimated income tax is $46,458 and the Medicare levy is $3,520 (2% after the low-income shade). That leaves take-home of about $126,022, or $2,424 per week. Change the inputs for your own rate — the deductions field reduces taxable income. HELP/HECS and MLS are not modelled; super is shown as a separate set-aside, not deducted. This is an estimate only — confirm with the ATO or a registered tax agent.</p>
-    </section>
-
-    <section class="card">
-      <div class="row" style="justify-content:space-between;margin-bottom:14px">
-        <div class="seg" role="group" aria-label="Input mode">
-          <button type="button" data-mode="day" class="active">Day rate</button>
-          <button type="button" data-mode="annual" class="">Annual</button>
-          <button type="button" data-mode="target" class="">Target take-home</button>
-        </div>
-        <div class="seg" role="group" aria-label="GST mode">
-          <button type="button" data-gst="ex" class="active">GST exclusive</button>
-          <button type="button" data-gst="inc" class="">GST inclusive</button>
-        </div>
-      </div>
-      <p class="hint" style="margin:-6px 0 12px">Is your quoted day rate before GST (exclusive) or including GST?</p>
-      <div class="grid grid-2">
-        <div>
-          <label id="amount-label" for="amount">Day rate (AUD)</label>
-          <input id="amount" name="amount" type="number" min="0" step="1" inputmode="decimal" value="800" />
-        </div>
-        <div>
-          <label for="days">Billable days / year</label>
-          <input id="days" name="days" type="number" min="1" max="365" step="1" value="220" />
-        </div>
-      </div>
-      <div class="grid grid-2" style="margin-top:12px">
-        <div>
-          <label for="deductions">Deductions / year (AUD, optional)</label>
-          <input id="deductions" name="deductions" type="number" min="0" step="100" inputmode="decimal" value="0" placeholder="0" />
-        </div>
-        <div>
-          <label>Super set-aside</label>
-          <p class="hint" style="margin:9px 0 0">Shown below at 12% of ex-GST income (SG-equivalent). Informational only — not deducted from the take-home figure.</p>
-        </div>
-      </div>
-      <p class="disclaimer" style="margin-top:14px">
-        Superannuation: many contractors invoice super separately or contribute personally.
-        The super set-aside card shows an SG-equivalent 12% of ex-GST income;
-        the main take-home figure does <strong>not</strong> deduct it — treat super as an extra cashflow item.
-      </p>
-    </section>
-
-    <section class="card">
-      <div class="row" style="justify-content:space-between;align-items:baseline">
-        <h2>Results</h2>
-        <button type="button" id="print-btn" class="ghost no-print">Print / save PDF</button>
-      </div>
-      <p class="print-only" style="font-size:12px;color:#444">
-        Contractor cheat-sheet — FY2025-26 estimate only, not tax advice. Medicare at single thresholds; HELP/MLS not modelled; super set-aside shown separately. Confirm with the ATO or a registered tax agent.
-      </p>
-      <div class="grid grid-3">
-        <div class="stat" id="solved-card" style="grid-column:1/-1;border-color:rgba(91,140,255,.45);display:none">
-          <div class="k">Required day rate to hit that take-home</div>
-          <div class="v" id="out-solved" style="color:var(--accent2);font-size:1.8rem">—</div>
-          <div class="hint">ex GST · inc GST ≈ <span id="out-solved-inc">—</span> /day · at the billable days and deductions above</div>
-        </div>
-        <div class="stat"><div class="k">Annual (ex GST)</div><div class="v" id="out-annual-ex">$176,000</div><div class="hint">Taxable income estimate</div></div>
-        <div class="stat"><div class="k">Annual (inc GST)</div><div class="v" id="out-annual-inc">$193,600</div><div class="hint">What clients may see</div></div>
-        <div class="stat"><div class="k">GST / year</div><div class="v" id="out-gst-annual">$17,600</div><div class="hint">Remit via BAS (estimate)</div></div>
-        <div class="stat"><div class="k">Day rate (ex GST)</div><div class="v" id="out-day-ex">$800.00</div></div>
-        <div class="stat"><div class="k">Day rate (inc GST)</div><div class="v" id="out-day-inc">$880.00</div></div>
-        <div class="stat"><div class="k">Weekly gross (ex GST)</div><div class="v" id="out-weekly">$3,385</div><div class="hint"><span id="out-days">220</span> days/yr</div></div>
-        <div class="stat"><div class="k">Income tax</div><div class="v" id="out-tax">$46,458</div><div class="hint">Resident brackets FY2025-26</div></div>
-        <div class="stat"><div class="k">Medicare levy</div><div class="v" id="out-medicare">$3,520</div><div class="hint">2% with low-income shade</div></div>
-        <div class="stat"><div class="k">Effective tax rate</div><div class="v" id="out-eff">28.4%</div></div>
-        <div class="stat"><div class="k">Super set-aside (12%)</div><div class="v" id="out-super">$21,120</div><div class="hint">SG-equivalent on ex-GST income · informational</div></div>
-        <div class="stat"><div class="k">Take-home after super</div><div class="v" id="out-takehome-super">$104,902</div><div class="hint">If you set aside the super line</div></div>
-        <div class="stat" style="grid-column:1/-1;border-color:rgba(61,214,198,.45)">
-          <div class="k">Estimated take-home / year</div>
-          <div class="v" id="out-takehome" style="color:var(--accent);font-size:1.8rem">$126,022</div>
-          <div class="hint">approx <span id="out-takehome-week">$2,424</span> / week · deductions entered above reduce taxable income · no MLS, HELP, or private health surcharge · Medicare family/SAPTO thresholds not modelled (single thresholds only)</div>
-        </div>
-      </div>
-      <table class="baked">
-        <caption>Example snapshot — $800/day GST exclusive, 220 days (FY2025-26 estimate). Cards above update if you change inputs.</caption>
-        <thead><tr><th>Item</th><th>AUD</th></tr></thead>
-        <tbody>
-          <tr><td>Annual (ex GST)</td><td>$176,000</td></tr>
-          <tr><td>Income tax</td><td>$46,458</td></tr>
-          <tr><td>Medicare levy</td><td>$3,520</td></tr>
-          <tr><td>Estimated take-home</td><td>$126,022</td></tr>
-        </tbody>
-      </table>
-      
-    </section>
-
-    <section class="card">
-      <h2>Get the contractor rate cheat-sheet</h2>
-      <p class="sub" style="margin-bottom:12px">Occasional tips for AU freelancers. No spam. Unsubscribe anytime.</p>
-      <form id="lead-form" name="lead" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/">
-        <!-- netlify-forms: lead -->
-        <!-- action stays same-origin so Netlify Forms detection works and no-JS submissions land in Netlify; app.js reroutes to Formspree via fetch when a real form ID is configured. -->
-        <div class="grid grid-2">
-          <div>
-            <label for="name">Name (optional)</label>
-            <input id="name" name="name" type="text" autocomplete="name" />
-          </div>
-          <div>
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
-          </div>
-        </div>
-        <input type="hidden" name="_subject" value="AU Freelancer Calc lead" />
-        <input type="text" name="_gotcha" class="sr-only" tabindex="-1" autocomplete="off" />
-        <p class="sr-only"><label>Do not fill: <input name="bot-field" /></label></p>
-        <input type="hidden" name="form-name" value="lead" />
-        <div class="row" style="margin-top:12px">
-          <button class="primary" type="submit">Send me the cheat-sheet</button>
-        </div>
-        <div id="form-msg" class="form-msg" role="status"></div>
-      </form>
-    </section>
-
-    <section class='card'><h2>Popular day rates</h2><div class='presets'><a href="/400-day-rate/">$400/day</a>
-<a href="/500-day-rate/">$500/day</a>
-<a href="/600-day-rate/">$600/day</a>
-<a href="/700-day-rate/">$700/day</a>
-<a href="/800-day-rate/">$800/day</a>
-<a href="/900-day-rate/">$900/day</a>
-<a href="/1000-day-rate/">$1,000/day</a>
-<a href="/1200-day-rate/">$1,200/day</a>
-<a href="/1500-day-rate/">$1,500/day</a></div><h2 style='margin-top:18px'>Salary after-tax presets</h2><div class='presets'><a href="/80000-salary-after-tax/">$80,000 salary</a>
-<a href="/100000-salary-after-tax/">$100,000 salary</a>
-<a href="/120000-salary-after-tax/">$120,000 salary</a>
-<a href="/150000-salary-after-tax/">$150,000 salary</a>
-<a href="/200000-salary-after-tax/">$200,000 salary</a></div><p style='margin-top:12px;font-size:13px;color:var(--muted)'><a href='/sitemap.xml'>Full sitemap</a> · more presets indexed for search</p></section>
-
-
-    <section class="card">
-      <h2>FAQ</h2>
-      <ul class="faq-list">
-        <li><h3>How do I convert an AU contractor day rate to annual income?</h3><p>Multiply your GST-exclusive day rate by billable days. Default is 220 days. Example: $800 x 220 = $176,000 a year before tax.</p></li>
-<li><h3>Which tax year and brackets does AU Freelancer Calc use?</h3><p>ATO resident rates for FY2025-26: 0% to $18,200, 16% to $45,000, 30% to $135,000, 37% to $190,000, then 45%. Medicare 2% with shade $28,011 to $35,013. Last checked 2026-08-22.</p></li>
-<li><h3>Does estimated take-home include GST, super, or HELP?</h3><p>GST is excluded from taxable income (contractors remit it). Super is shown separately as a 12% SG-equivalent set-aside, not deducted from take-home. HELP/HECS, MLS, offsets are not modelled. Estimate only.</p></li>
-<li><h3>Example: what does a $800 day rate come to after tax?</h3><p>Labelled example $800/day GST exclusive over 220 days: annual $176,000 (ex GST), income tax $46,458, Medicare $3,520, take-home $126,022.</p></li>
-<li><h3>Is this official ATO tax advice?</h3><p>No. Free estimate for AU freelancers, not tax advice. Confirm with the ATO or a registered tax agent.</p></li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2>Disclaimer and sources</h2>
-      <p class="disclaimer">
-        This is an <strong>estimate only</strong>, not tax, financial, or legal advice.
-        Actual tax depends on deductions, residency, HELP/HECS, Medicare levy surcharge, offsets, and your situation.
-        Medicare is modelled at single-person thresholds only — family and SAPTO thresholds are not included.
-        Confirm figures with the ATO or a registered tax agent before making decisions.
-      </p>
-      <ul class="sources">
-        <li><a href="https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents/" rel="noopener" target="_blank">ATO resident tax rates 2025-26</a></li>
-<li><a href="https://www.ato.gov.au/individuals-and-families/medicare-and-private-health-insurance/medicare-levy/medicare-levy-reduction/medicare-levy-reduction-for-low-income-earners" rel="noopener" target="_blank">ATO Medicare levy reduction (low-income thresholds)</a></li>
-<li><a href="https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst" rel="noopener" target="_blank">GST rate (10%) - ATO GST overview</a></li>
-      </ul>
-      <p style="font-size:12px;color:var(--muted)">Rates last checked: 2026-08-22 (FY2025-26). GST assumed at 10%.</p>
-    </section>
-
-    <footer>
-      <p><strong>AU Freelancer Calc</strong> — Day rate ↔ annual ↔ take-home (AU contractor estimate)</p>
-      <p>Built as a weekend wedge for AU freelancers · <a href="/robots.txt">robots.txt</a> · <a href="/sitemap.xml">sitemap</a> · <a href="/llms.txt">llms.txt</a></p>
-    </footer>
+<section class="card inputs-card">
+  <div class="controls-row">
+    <div class="seg mode-seg" role="group" aria-label="Input mode">
+      <button type="button" data-mode="day">Day rate</button><button type="button" data-mode="annual">Annual revenue</button><button type="button" data-mode="target">Target take-home</button><button type="button" data-mode="employee">Employee salary</button><button type="button" data-mode="hourly">Hourly rate</button>
+    </div>
+    <div class="seg" id="gst-seg" role="group" aria-label="GST mode"><button type="button" data-gst="ex">GST exclusive</button><button type="button" data-gst="inc">GST inclusive</button></div>
   </div>
-  <script src="/calc.js"></script>
-  <script src="/app.js"></script>
-</body>
-</html>
+  <div class="seg fy-seg" role="group" aria-label="Financial year"><button type="button" data-fy="2026-27">FY2026-27</button><button type="button" data-fy="2025-26">FY2025-26</button></div>
+  <p class="hint gst-hint" id="gst-hint">Choose whether the entered amount includes GST.</p>
+  <div class="grid grid-2"><div><label id="amount-label" for="amount">Day rate (AUD)</label><input id="amount" name="amount" type="number" min="0" step="1" inputmode="decimal" value="800"></div><div><label for="days">Billable days / year</label><input id="days" name="days" type="number" min="1" max="365" step="1" value="220"></div></div>
+  <div class="grid grid-2 fields-row"><div><label for="deductions">Deductions / year (AUD, optional)</label><input id="deductions" name="deductions" type="number" min="0" step="100" inputmode="decimal" value="0"></div><div id="hours-field"><label for="hours">Hours / day</label><input id="hours" name="hours" type="number" min="1" max="24" step="0.5" value="8"></div></div>
+  <label class="check"><input id="has-help" type="checkbox"> I have a HELP/HECS debt</label>
+  <p class="hint" id="gst-threshold-hint" hidden>Under $75,000 turnover, GST registration is optional. If you are not registered, use GST exclusive and ignore the GST cards.</p>
+</section>
+
+<section class="card results-card"><div class="results-head"><h2>Results</h2><button type="button" id="print-btn" class="ghost no-print">Print / save PDF</button></div><p class="print-only">Contractor cheat-sheet — FY<span class="current-fy">2026-27</span> estimate only, not tax advice.</p>
+  <div class="grid grid-3" id="results-grid" aria-live="polite">
+    <div class="stat solved" id="solved-card" hidden><div class="k">Required day rate — solved ex GST</div><div class="v accent2" id="out-solved">—</div><div class="hint">inc GST ≈ <span id="out-solved-inc">—</span> /day</div></div>
+    <div class="stat solved" id="equivalent-card" hidden><div class="k">Contractor day-rate equivalent</div><div class="v accent2" id="out-equivalent">—</div><div class="hint">Same estimated take-home at the selected billable days</div></div>
+    <div class="stat take-home"><div class="k">Estimated take-home / year</div><div class="v accent" id="out-takehome">$126,290</div><div class="hint">about <span id="out-takehome-week">$2,429</span> / week</div><details><summary>What goes into this</summary><p>Taxable income is revenue excluding GST minus deductions. Income tax, Medicare and selected HELP repayment are deducted. MLS, offsets, family/SAPTO thresholds and company/PSI structures are excluded.</p></details></div>
+    <div class="stat"><div class="k">Day rate (ex GST)</div><div class="v" id="out-day-ex">$800.00</div></div><div class="stat"><div class="k">Day rate (inc GST)</div><div class="v" id="out-day-inc">$880.00</div></div>
+    <div class="stat"><div class="k">Annual (ex GST)</div><div class="v" id="out-annual-ex">$176,000</div></div><div class="stat"><div class="k">Annual (inc GST)</div><div class="v" id="out-annual-inc">$193,600</div></div>
+    <div class="stat"><div class="k">Income tax</div><div class="v" id="out-tax">$46,190</div></div><div class="stat"><div class="k">Medicare levy</div><div class="v" id="out-medicare">$3,520</div></div><div class="stat" id="help-card" hidden><div class="k">HELP/HECS repayment</div><div class="v" id="out-help">$0</div></div>
+    <div class="stat"><div class="k">Effective tax rate</div><div class="v" id="out-eff">28.2%</div></div><div class="stat"><div class="k">GST / year</div><div class="v" id="out-gst-annual">$17,600</div></div><div class="stat"><div class="k">Weekly gross (ex GST)</div><div class="v" id="out-weekly">$3,385</div><div class="hint"><span id="out-days">220</span> days/year</div></div>
+    <div class="stat"><div class="k" id="super-label">Super set-aside (12%)</div><div class="v" id="out-super">$21,120</div></div><div class="stat"><div class="k">Take-home after super set-aside</div><div class="v" id="out-takehome-super">$105,170</div></div>
+  </div>
+  <table class="baked"><caption>Preset snapshot, FY2026-27. Interactive results update when inputs change.</caption><thead><tr><th>Item</th><th>AUD</th></tr></thead><tbody><tr><td>Annual income</td><td>$176,000</td></tr><tr><td>Income tax</td><td>$46,190</td></tr><tr><td>Medicare levy</td><td>$3,520</td></tr><tr><td>Estimated take-home</td><td>$126,290</td></tr></tbody></table><table class="baked neighbours"><caption>Nearby FY2026-27 presets</caption><thead><tr><th>Preset</th><th>Annual</th><th>Take-home</th></tr></thead><tbody><tr><td><a href="/700-day-rate/">$700/day</a></td><td>$154,000</td><td>$112,870</td></tr><tr><td><a href="/750-day-rate/">$750/day</a></td><td>$165,000</td><td>$119,580</td></tr><tr><td>$800/day</td><td>$176,000</td><td>$126,290</td></tr><tr><td><a href="/850-day-rate/">$850/day</a></td><td>$187,000</td><td>$133,000</td></tr><tr><td><a href="/900-day-rate/">$900/day</a></td><td>$198,000</td><td>$139,070</td></tr></tbody></table>
+</section>
+
+<section class="card"><h2>Get occasional AU contractor tips</h2><p class="sub lead-copy">Useful rate, tax and freelancing notes. No spam. Unsubscribe anytime. For a cheat-sheet now, use “Print / save PDF” above.</p><form id="lead-form" name="lead" method="post" data-netlify="true" netlify-honeypot="bot-field" action="/"><div class="grid grid-2"><div><label for="name">Name (optional)</label><input id="name" name="name" type="text" autocomplete="name"></div><div><label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email"></div></div><p class="sr-only"><label>Do not fill: <input name="bot-field"></label></p><input type="hidden" name="form-name" value="lead"><div class="submit-row"><button class="primary" type="submit">Send me occasional AU contractor tips</button></div><div id="form-msg" class="form-msg" role="status"></div></form></section>
+<section class="card"><h2>Popular presets</h2><div class="presets"><a href="/400-day-rate/">$400/day</a><a href="/600-day-rate/">$600/day</a><a href="/800-day-rate/">$800/day</a><a href="/1000-day-rate/">$1,000/day</a><a href="/1200-day-rate/">$1,200/day</a><a href="/1500-day-rate/">$1,500/day</a><a href="/80000-salary-after-tax/">$80,000 salary</a><a href="/120000-salary-after-tax/">$120,000 salary</a><a href="/100-hourly-rate/">$100/hour</a></div><p class="preset-index-link"><a href="/presets/">View every preset and baked take-home estimate</a></p></section>
+
+<section class="card"><h2>About this calculator</h2><p>Ian Hunt built this calculator in Australia through Curious Ape to make contractor rate decisions less opaque. Rates are re-checked every July and after each federal budget.</p><p>Last updated: 2026-09-05 · Rates last checked: 2026-09-05 (FY<span class="current-fy">2026-27</span>).</p></section>
+<section class="card"><h2>FAQ</h2><ul class="faq-list"><li><h3>Which financial year does this use?</h3><p>Baked figures use FY2026-27. Use the financial-year switch to compare FY2025-26.</p></li><li><h3>How is take-home calculated?</h3><p>GST-exclusive revenue minus deductions, resident income tax, Medicare and an optional HELP repayment. The default is 220 billable days.</p></li><li><h3>Does this include super?</h3><p>For contractors, 12% is shown as a voluntary set-aside. For employees, 12% employer super is shown on top of salary.</p></li><li><h3>Is this tax advice?</h3><p>No. It is an estimate for planning. Confirm your circumstances with the ATO or a registered tax agent.</p></li></ul></section>
+<section class="card"><h2>Disclaimer and sources</h2><p class="disclaimer">Estimate only, not tax, financial or legal advice. Actual tax depends on your circumstances. Confirm figures with the ATO or a registered tax agent.</p><ul class="sources"><li><a href="https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents/individual-income-tax-rates" rel="noopener" target="_blank">Australian resident income tax rates</a></li>
+<li><a href="https://www.ato.gov.au/individuals-and-families/medicare-and-private-health-insurance/medicare-levy/medicare-levy-reduction/medicare-levy-reduction-for-low-income-earners" rel="noopener" target="_blank">Medicare levy reduction for low-income earners</a></li>
+<li><a href="https://www.ato.gov.au/tax-rates-and-codes/study-and-training-support-loans-rates-and-repayment-thresholds" rel="noopener" target="_blank">Study and training loan repayment thresholds</a></li>
+<li><a href="https://www.ato.gov.au/businesses-and-organisations/gst-excise-and-indirect-taxes/gst" rel="noopener" target="_blank">GST overview</a></li></ul><p class="source-note">ATO has not published a separate FY2026-27 single threshold pair; FY2025-26 thresholds are retained.</p></section>
+<footer><p><strong>AU Freelancer Calc</strong> — Australian contractor and employee estimate</p><p><a href="/presets/">All presets</a> · <a href="/how-it-works/">How it works</a> · <a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">llms.txt</a></p></footer>
+</div><script src="/config.js"></script><script src="/calc.js"></script><script src="/app.js"></script></body></html>

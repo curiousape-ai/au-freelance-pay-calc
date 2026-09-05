@@ -1,131 +1,19 @@
-
-(function (global) {
-  const CFG = global.AU_CALC_CONFIG;
-
-  function incomeTax(taxable) {
-    if (taxable <= 0) return 0;
-    // Progressive calc driven entirely by CFG.brackets:
-    // each bracket carries the cumulative ATO base tax at its lower edge.
-    let prev = 0;
-    for (const b of CFG.brackets) {
-      if (b.up_to === null || taxable <= b.up_to) {
-        return b.base + (taxable - prev) * b.rate;
-      }
-      prev = b.up_to;
-    }
-    return 0; // unreachable while a null (top) bracket exists
+(function(global){
+  const CFG=global.AU_CALC_CONFIG, yc=(fy)=>CFG.years[fy||CFG.default_fy];
+  function incomeTax(x,fy){x=Math.max(0,Number(x)||0);let prev=0;for(const b of yc(fy).brackets){if(b.up_to===null||x<=b.up_to)return b.base+(x-prev)*b.rate;prev=b.up_to}return 0}
+  function medicareLevy(x,fy){x=Math.max(0,Number(x)||0);const y=yc(fy);if(x<=y.medicare_lower)return 0;if(x<y.medicare_upper)return Math.min((x-y.medicare_lower)*.1,x*y.medicare_levy);return x*y.medicare_levy}
+  function helpRepayment(x,fy){x=Math.max(0,Number(x)||0);const h=yc(fy).help;if(x<=h.threshold)return 0;let m=(x-h.threshold)*h.lower_rate;if(x>h.upper_threshold)m+=(x-h.upper_threshold)*h.upper_rate;return Math.min(m,x*h.cap_rate)}
+  function split(x,inc){if(inc){const ex=x/(1+CFG.gst_rate);return{ex,inc:x,gst:x-ex}}return{ex:x,inc:x*(1+CFG.gst_rate),gst:x*CFG.gst_rate}}
+  function calculate({mode,amount,days,gstInclusive,deductions,fy,hasHelp,hoursPerDay}){
+    fy=fy||CFG.default_fy;days=Number(days)||CFG.default_days;hoursPerDay=Number(hoursPerDay)||CFG.default_hours_per_day;amount=Math.max(0,Number(amount)||0);deductions=Math.max(0,Number(deductions)||0);
+    const employee=mode==='employee';let dayEx,dayIncl,dayGst,annualEx,annualIncl,annualGst;
+    if(employee){annualEx=annualIncl=amount;annualGst=0;dayEx=dayIncl=days?amount/days:0;dayGst=0}
+    else{const entered=mode==='hourly'?amount*hoursPerDay:amount,s=split(entered,!!gstInclusive);if(mode==='day'||mode==='hourly'){dayEx=s.ex;dayIncl=s.inc;dayGst=s.gst;annualEx=dayEx*days;annualIncl=dayIncl*days;annualGst=dayGst*days}else{annualEx=s.ex;annualIncl=s.inc;annualGst=s.gst;dayEx=days?annualEx/days:0;dayIncl=days?annualIncl/days:0;dayGst=days?annualGst/days:0}}
+    const taxable=Math.max(0,annualEx-deductions),tax=incomeTax(taxable,fy),medicare=medicareLevy(taxable,fy),help=hasHelp?helpRepayment(taxable,fy):0,totalTax=tax+medicare+help,takeHome=Math.max(0,taxable-totalTax),employerSuper=employee?annualEx*CFG.sg_rate:0,superSetAside=employee?0:annualEx*CFG.sg_rate;
+    return{fy,days,hoursPerDay,dayEx,dayIncl,dayGst,hourlyEx:hoursPerDay?dayEx/hoursPerDay:0,annualEx,annualIncl,annualGst,deductions,taxable,tax,medicare,helpRepayment:help,totalTax,takeHome,weeklyTakeHome:takeHome/52,weeklyGrossEx:annualEx/52,effectiveRate:taxable?totalTax/taxable:0,superSetAside,employerSuper,takeHomeAfterSuper:Math.max(0,takeHome-superSetAside),gstInclusive:!!gstInclusive&&!employee,hasHelp:!!hasHelp}
   }
-
-  function medicareLevy(taxable) {
-    const lower = CFG.medicare_lower;
-    const upper = CFG.medicare_upper;
-    const rate = CFG.medicare_levy;
-    if (taxable <= lower) return 0;
-    if (taxable < upper) {
-      // Shade-out: levy = rate * (income - lower) / (upper - lower) * income? 
-      // ATO formula: reduced levy = (taxable - lower) * 0.10 (approx shade rate historically)
-      // Accurate-enough: linear shade from 0 at lower to full rate*upper at upper.
-      // Official reduction: Medicare levy = (taxable income − lower threshold) × 10%
-      // until it reaches 2% of taxable income.
-      const reduced = (taxable - lower) * 0.10;
-      const full = taxable * rate;
-      return Math.min(reduced, full);
-    }
-    return taxable * rate;
-  }
-
-  function gstSplit(amount, inclusive) {
-    const r = CFG.gst_rate;
-    if (inclusive) {
-      const ex = amount / (1 + r);
-      return { exclusive: ex, inclusive: amount, gst: amount - ex };
-    }
-    return { exclusive: amount, inclusive: amount * (1 + r), gst: amount * r };
-  }
-
-  /**
-   * mode: 'day' | 'annual'
-   * amount: day rate or annual (depending on gstInclusive interpretation for day rate)
-   * days: billable days/year
-   * gstInclusive: whether amount includes GST
-   * deductions: annual tax deductions (reduce taxable income)
-   * For take-home we tax on GST-exclusive income (contractors remit GST; taxable income ≈ excl GST).
-   */
-  function calculate({ mode, amount, days, gstInclusive, deductions }) {
-    days = days || CFG.default_days;
-    amount = Number(amount) || 0;
-    deductions = Math.max(0, Number(deductions) || 0);
-    let dayRateInput = 0;
-    let annualGrossInclOrAsEntered = 0;
-    let dayEx, dayIncl, dayGst, annualEx, annualIncl, annualGst;
-
-    if (mode === 'day') {
-      const split = gstSplit(amount, gstInclusive);
-      dayEx = split.exclusive;
-      dayIncl = split.inclusive;
-      dayGst = split.gst;
-      annualEx = dayEx * days;
-      annualIncl = dayIncl * days;
-      annualGst = dayGst * days;
-      dayRateInput = amount;
-    } else {
-      const split = gstSplit(amount, gstInclusive);
-      annualEx = split.exclusive;
-      annualIncl = split.inclusive;
-      annualGst = split.gst;
-      dayEx = days ? annualEx / days : 0;
-      dayIncl = days ? annualIncl / days : 0;
-      dayGst = days ? annualGst / days : 0;
-    }
-
-    const taxable = Math.max(0, annualEx - deductions); // estimate: GST-exclusive revenue minus deductions (contractors remit GST)
-    const tax = incomeTax(taxable);
-    const medicare = medicareLevy(taxable);
-    const totalTax = tax + medicare;
-    const takeHome = Math.max(0, taxable - totalTax);
-    const weeklyTakeHome = takeHome / 52;
-    const weeklyGrossEx = annualEx / 52;
-    const effectiveRate = taxable > 0 ? totalTax / taxable : 0;
-    const superSetAside = annualEx * CFG.sg_rate;
-    const takeHomeAfterSuper = Math.max(0, takeHome - superSetAside);
-
-    return {
-      days,
-      dayEx, dayIncl, dayGst,
-      annualEx, annualIncl, annualGst,
-      deductions,
-      taxable, tax, medicare, totalTax, takeHome,
-      weeklyTakeHome, weeklyGrossEx, effectiveRate,
-      superSetAside, takeHomeAfterSuper,
-      gstInclusive
-    };
-  }
-
-  /**
-   * Reverse: weekly take-home target -> required GST-exclusive day rate.
-   * Bisection on calculate(); take-home is monotonic in day rate.
-   */
-  function solveDayRateForWeeklyTakeHome(targetWeekly, days, deductions) {
-    targetWeekly = Number(targetWeekly) || 0;
-    if (targetWeekly <= 0) return 0;
-    let lo = 0, hi = 20000; // $20k/day is far beyond any bracket edge
-    for (let i = 0; i < 80; i++) {
-      const mid = (lo + hi) / 2;
-      const w = calculate({ mode: 'day', amount: mid, days, gstInclusive: false, deductions }).weeklyTakeHome;
-      if (w < targetWeekly) lo = mid; else hi = mid;
-    }
-    return (lo + hi) / 2;
-  }
-
-  function fmtAUD(n) {
-    return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 }).format(n || 0);
-  }
-  function fmtAUD2(n) {
-    return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n || 0);
-  }
-  function fmtPct(n) {
-    return (n * 100).toFixed(1) + '%';
-  }
-
-  global.AUCalc = { calculate, solveDayRateForWeeklyTakeHome, incomeTax, medicareLevy, gstSplit, fmtAUD, fmtAUD2, fmtPct };
+  function solveDayRateForWeeklyTakeHome(target,days,deductions,fy,hasHelp){target=Math.max(0,Number(target)||0);if(!target)return 0;let lo=0,hi=20000;for(let i=0;i<80;i++){const mid=(lo+hi)/2,v=calculate({mode:'day',amount:mid,days,gstInclusive:false,deductions,fy,hasHelp}).weeklyTakeHome;if(v<target)lo=mid;else hi=mid}return(lo+hi)/2}
+  function solveContractorDayRateForEmployeeSalary(salary,days,deductions,fy,hasHelp){const take=calculate({mode:'employee',amount:salary,days,deductions,fy,hasHelp}).takeHome;return solveDayRateForWeeklyTakeHome(take/52,days,0,fy,hasHelp)}
+  const fmtAUD=n=>new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD',maximumFractionDigits:0}).format(n||0),fmtAUD2=n=>new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD',minimumFractionDigits:2,maximumFractionDigits:2}).format(n||0),fmtPct=n=>(n*100).toFixed(1)+'%';
+  global.AUCalc={calculate,solveDayRateForWeeklyTakeHome,solveContractorDayRateForEmployeeSalary,incomeTax,medicareLevy,helpRepayment,fmtAUD,fmtAUD2,fmtPct};
 })(window);

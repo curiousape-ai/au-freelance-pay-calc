@@ -1,187 +1,50 @@
-<!DOCTYPE html>
-<html lang="en-AU">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>__OG_TITLE__</title>
-  <meta name="description" content="__OG_DESC__" />
-  <link rel="canonical" href="__CANONICAL__" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="__OG_TITLE__" />
-  <meta property="og:description" content="__OG_DESC__" />
-  <meta property="og:url" content="__CANONICAL__" />
-  <meta property="og:image" content="__OG_IMAGE__" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:locale" content="en_AU" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="__OG_TITLE__" />
-  <meta name="twitter:description" content="__OG_DESC__" />
-  <meta name="twitter:image" content="__OG_IMAGE__" />
-  <meta name="robots" content="index,follow" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="stylesheet" href="/styles.css" />
-  <script>window.AU_CALC_CONFIG = __CONFIG_JSON__;</script>
-  <script type="application/ld+json">
-__FAQ_JSON_LD__
-  </script>
+<!doctype html>
+<html lang="en-AU"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__OG_TITLE__</title><meta name="description" content="__OG_DESC__"><link rel="canonical" href="__CANONICAL__">
+<meta property="og:type" content="website"><meta property="og:title" content="__OG_TITLE__"><meta property="og:description" content="__OG_DESC__"><meta property="og:url" content="__CANONICAL__"><meta property="og:image" content="__OG_IMAGE__"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/styles.css">
+<script nonce="auc-jsonld" type="application/ld+json">__FAQ_JSON_LD__</script>
+<script defer data-domain="__ANALYTICS_DOMAIN__" src="https://plausible.io/js/script.js"></script>
 </head>
-<body data-preset-mode="__PRESET_MODE__" data-preset-amount="__PRESET_AMOUNT__" data-preset-gst="__PRESET_GST__">
-  <div class="wrap">
-    <header class="hero">
-      <div>
-        <div class="badge">FY__FY__ · Estimate only</div>
-        <h1>__H1__</h1>
-        <p class="sub">__INTRO__</p>
-      </div>
-      <a class="ghost" href="/">Full calculator</a>
-    </header>
+<body data-preset-mode="__PRESET_MODE__" data-preset-amount="__PRESET_AMOUNT__" data-preset-gst="ex" data-preset-fy="__FY__">
+<div class="wrap">
+<header class="hero"><div><div class="badge">FY<span id="badge-fy">__FY__</span> · Estimate only</div><h1>__H1__</h1><p class="sub">__INTRO__</p></div><a class="ghost" href="/">Full calculator</a></header>
+<section class="card answer-first"><h2 id="answer-heading">__ANSWER_HEADING__</h2><p id="quick-answer">__ANSWER__</p></section>
 
-    <section class="card answer-first">
-      <h2>__ANSWER_HEADING__</h2>
-      <p>__ANSWER__</p>
-    </section>
-
-    <section class="card">
-      <div class="row" style="justify-content:space-between;margin-bottom:14px">
-        <div class="seg" role="group" aria-label="Input mode">
-          <button type="button" data-mode="day" class="__DAY_BTN__">Day rate</button>
-          <button type="button" data-mode="annual" class="__ANN_BTN__">Annual</button>
-          <button type="button" data-mode="target" class="">Target take-home</button>
-        </div>
-        <div class="seg" role="group" aria-label="GST mode">
-          <button type="button" data-gst="ex" class="__EX_BTN__">GST exclusive</button>
-          <button type="button" data-gst="inc" class="__INC_BTN__">GST inclusive</button>
-        </div>
-      </div>
-      <p class="hint" style="margin:-6px 0 12px">__GST_HINT__</p>
-      <div class="grid grid-2">
-        <div>
-          <label id="amount-label" for="amount">__AMOUNT_LABEL__</label>
-          <input id="amount" name="amount" type="number" min="0" step="1" inputmode="decimal" value="__PRESET_AMOUNT__" />
-        </div>
-        <div>
-          <label for="days">Billable days / year</label>
-          <input id="days" name="days" type="number" min="1" max="365" step="1" value="__DAYS__" />
-        </div>
-      </div>
-      <div class="grid grid-2" style="margin-top:12px">
-        <div>
-          <label for="deductions">Deductions / year (AUD, optional)</label>
-          <input id="deductions" name="deductions" type="number" min="0" step="100" inputmode="decimal" value="0" placeholder="0" />
-        </div>
-        <div>
-          <label>Super set-aside</label>
-          <p class="hint" style="margin:9px 0 0">Shown below at __SG_PCT__% of ex-GST income (SG-equivalent). Informational only — not deducted from the take-home figure.</p>
-        </div>
-      </div>
-      <p class="disclaimer" style="margin-top:14px">
-        Superannuation: many contractors invoice super separately or contribute personally.
-        The super set-aside card shows an SG-equivalent __SG_PCT__% of ex-GST income;
-        the main take-home figure does <strong>not</strong> deduct it — treat super as an extra cashflow item.
-      </p>
-    </section>
-
-    <section class="card">
-      <div class="row" style="justify-content:space-between;align-items:baseline">
-        <h2>Results</h2>
-        <button type="button" id="print-btn" class="ghost no-print">Print / save PDF</button>
-      </div>
-      <p class="print-only" style="font-size:12px;color:#444">
-        Contractor cheat-sheet — FY__FY__ estimate only, not tax advice. Medicare at single thresholds; HELP/MLS not modelled; super set-aside shown separately. Confirm with the ATO or a registered tax agent.
-      </p>
-      <div class="grid grid-3">
-        <div class="stat" id="solved-card" style="grid-column:1/-1;border-color:rgba(91,140,255,.45);display:none">
-          <div class="k">Required day rate to hit that take-home</div>
-          <div class="v" id="out-solved" style="color:var(--accent2);font-size:1.8rem">—</div>
-          <div class="hint">ex GST · inc GST ≈ <span id="out-solved-inc">—</span> /day · at the billable days and deductions above</div>
-        </div>
-        <div class="stat"><div class="k">Annual (ex GST)</div><div class="v" id="out-annual-ex">__V_ANNUAL_EX__</div><div class="hint">Taxable income estimate</div></div>
-        <div class="stat"><div class="k">Annual (inc GST)</div><div class="v" id="out-annual-inc">__V_ANNUAL_INC__</div><div class="hint">What clients may see</div></div>
-        <div class="stat"><div class="k">GST / year</div><div class="v" id="out-gst-annual">__V_GST__</div><div class="hint">Remit via BAS (estimate)</div></div>
-        <div class="stat"><div class="k">Day rate (ex GST)</div><div class="v" id="out-day-ex">__V_DAY_EX__</div></div>
-        <div class="stat"><div class="k">Day rate (inc GST)</div><div class="v" id="out-day-inc">__V_DAY_INC__</div></div>
-        <div class="stat"><div class="k">Weekly gross (ex GST)</div><div class="v" id="out-weekly">__V_WEEKLY__</div><div class="hint"><span id="out-days">__DAYS__</span> days/yr</div></div>
-        <div class="stat"><div class="k">Income tax</div><div class="v" id="out-tax">__V_TAX__</div><div class="hint">Resident brackets FY__FY__</div></div>
-        <div class="stat"><div class="k">Medicare levy</div><div class="v" id="out-medicare">__V_MEDICARE__</div><div class="hint">2% with low-income shade</div></div>
-        <div class="stat"><div class="k">Effective tax rate</div><div class="v" id="out-eff">__V_EFF__</div></div>
-        <div class="stat"><div class="k">Super set-aside (__SG_PCT__%)</div><div class="v" id="out-super">__V_SUPER__</div><div class="hint">SG-equivalent on ex-GST income · informational</div></div>
-        <div class="stat"><div class="k">Take-home after super</div><div class="v" id="out-takehome-super">__V_TAKE_SUPER__</div><div class="hint">If you set aside the super line</div></div>
-        <div class="stat" style="grid-column:1/-1;border-color:rgba(61,214,198,.45)">
-          <div class="k">Estimated take-home / year</div>
-          <div class="v" id="out-takehome" style="color:var(--accent);font-size:1.8rem">__V_TAKE__</div>
-          <div class="hint">approx <span id="out-takehome-week">__V_TAKE_WEEK__</span> / week · deductions entered above reduce taxable income · no MLS, HELP, or private health surcharge · Medicare family/SAPTO thresholds not modelled (single thresholds only)</div>
-        </div>
-      </div>
-      <table class="baked">
-        <caption>__CAPTION__</caption>
-        <thead><tr><th>Item</th><th>AUD</th></tr></thead>
-        <tbody>
-          <tr><td>Annual (ex GST)</td><td>__V_ANNUAL_EX__</td></tr>
-          <tr><td>Income tax</td><td>__V_TAX__</td></tr>
-          <tr><td>Medicare levy</td><td>__V_MEDICARE__</td></tr>
-          <tr><td>Estimated take-home</td><td>__V_TAKE__</td></tr>
-        </tbody>
-      </table>
-      __NEIGHBOURS__
-    </section>
-
-    <section class="card">
-      <h2>Get the contractor rate cheat-sheet</h2>
-      <p class="sub" style="margin-bottom:12px">Occasional tips for AU freelancers. No spam. Unsubscribe anytime.</p>
-      <form id="lead-form" name="lead" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/">
-        <!-- netlify-forms: lead -->
-        <!-- action stays same-origin so Netlify Forms detection works and no-JS submissions land in Netlify; app.js reroutes to Formspree via fetch when a real form ID is configured. -->
-        <div class="grid grid-2">
-          <div>
-            <label for="name">Name (optional)</label>
-            <input id="name" name="name" type="text" autocomplete="name" />
-          </div>
-          <div>
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
-          </div>
-        </div>
-        <input type="hidden" name="_subject" value="AU Freelancer Calc lead" />
-        <input type="text" name="_gotcha" class="sr-only" tabindex="-1" autocomplete="off" />
-        <p class="sr-only"><label>Do not fill: <input name="bot-field" /></label></p>
-        <input type="hidden" name="form-name" value="lead" />
-        <div class="row" style="margin-top:12px">
-          <button class="primary" type="submit">Send me the cheat-sheet</button>
-        </div>
-        <div id="form-msg" class="form-msg" role="status"></div>
-      </form>
-    </section>
-
-    __PRESETS__
-
-    <section class="card">
-      <h2>FAQ</h2>
-      <ul class="faq-list">
-        __FAQ_ITEMS__
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2>Disclaimer and sources</h2>
-      <p class="disclaimer">
-        This is an <strong>estimate only</strong>, not tax, financial, or legal advice.
-        Actual tax depends on deductions, residency, HELP/HECS, Medicare levy surcharge, offsets, and your situation.
-        Medicare is modelled at single-person thresholds only — family and SAPTO thresholds are not included.
-        Confirm figures with the ATO or a registered tax agent before making decisions.
-      </p>
-      <ul class="sources">
-        __SOURCES__
-      </ul>
-      <p style="font-size:12px;color:var(--muted)">Rates last checked: __LAST_CHECKED__ (FY__FY__). GST assumed at 10%.</p>
-    </section>
-
-    <footer>
-      <p><strong>AU Freelancer Calc</strong> — Day rate ↔ annual ↔ take-home (AU contractor estimate)</p>
-      <p>Built as a weekend wedge for AU freelancers · <a href="/robots.txt">robots.txt</a> · <a href="/sitemap.xml">sitemap</a> · <a href="/llms.txt">llms.txt</a></p>
-    </footer>
+<section class="card inputs-card">
+  <div class="controls-row">
+    <div class="seg mode-seg" role="group" aria-label="Input mode">
+      <button type="button" data-mode="day">Day rate</button><button type="button" data-mode="annual">Annual revenue</button><button type="button" data-mode="target">Target take-home</button><button type="button" data-mode="employee">Employee salary</button><button type="button" data-mode="hourly">Hourly rate</button>
+    </div>
+    <div class="seg" id="gst-seg" role="group" aria-label="GST mode"><button type="button" data-gst="ex">GST exclusive</button><button type="button" data-gst="inc">GST inclusive</button></div>
   </div>
-  <script src="/calc.js"></script>
-  <script src="/app.js"></script>
-</body>
-</html>
+  <div class="seg fy-seg" role="group" aria-label="Financial year"><button type="button" data-fy="2026-27">FY2026-27</button><button type="button" data-fy="2025-26">FY2025-26</button></div>
+  <p class="hint gst-hint" id="gst-hint">__GST_HINT__</p>
+  <div class="grid grid-2"><div><label id="amount-label" for="amount">__AMOUNT_LABEL__</label><input id="amount" name="amount" type="number" min="0" step="1" inputmode="decimal" value="__PRESET_AMOUNT__"></div><div><label for="days">Billable days / year</label><input id="days" name="days" type="number" min="1" max="365" step="1" value="__DAYS__"></div></div>
+  <div class="grid grid-2 fields-row"><div><label for="deductions">Deductions / year (AUD, optional)</label><input id="deductions" name="deductions" type="number" min="0" step="100" inputmode="decimal" value="0"></div><div id="hours-field"><label for="hours">Hours / day</label><input id="hours" name="hours" type="number" min="1" max="24" step="0.5" value="8"></div></div>
+  <label class="check"><input id="has-help" type="checkbox"> I have a HELP/HECS debt</label>
+  <p class="hint" id="gst-threshold-hint" hidden>Under $75,000 turnover, GST registration is optional. If you are not registered, use GST exclusive and ignore the GST cards.</p>
+</section>
+
+<section class="card results-card"><div class="results-head"><h2>Results</h2><button type="button" id="print-btn" class="ghost no-print">Print / save PDF</button></div><p class="print-only">Contractor cheat-sheet — FY<span class="current-fy">__FY__</span> estimate only, not tax advice.</p>
+  <div class="grid grid-3" id="results-grid" aria-live="polite">
+    <div class="stat solved" id="solved-card" hidden><div class="k">Required day rate — solved ex GST</div><div class="v accent2" id="out-solved">—</div><div class="hint">inc GST ≈ <span id="out-solved-inc">—</span> /day</div></div>
+    <div class="stat solved" id="equivalent-card" hidden><div class="k">Contractor day-rate equivalent</div><div class="v accent2" id="out-equivalent">—</div><div class="hint">Same estimated take-home at the selected billable days</div></div>
+    <div class="stat take-home"><div class="k">Estimated take-home / year</div><div class="v accent" id="out-takehome">__V_TAKE__</div><div class="hint">about <span id="out-takehome-week">__V_TAKE_WEEK__</span> / week</div><details><summary>What goes into this</summary><p>Taxable income is revenue excluding GST minus deductions. Income tax, Medicare and selected HELP repayment are deducted. MLS, offsets, family/SAPTO thresholds and company/PSI structures are excluded.</p></details></div>
+    <div class="stat"><div class="k">Day rate (ex GST)</div><div class="v" id="out-day-ex">__V_DAY_EX__</div></div><div class="stat"><div class="k">Day rate (inc GST)</div><div class="v" id="out-day-inc">__V_DAY_INC__</div></div>
+    <div class="stat"><div class="k">Annual (ex GST)</div><div class="v" id="out-annual-ex">__V_ANNUAL_EX__</div></div><div class="stat"><div class="k">Annual (inc GST)</div><div class="v" id="out-annual-inc">__V_ANNUAL_INC__</div></div>
+    <div class="stat"><div class="k">Income tax</div><div class="v" id="out-tax">__V_TAX__</div></div><div class="stat"><div class="k">Medicare levy</div><div class="v" id="out-medicare">__V_MEDICARE__</div></div><div class="stat" id="help-card" hidden><div class="k">HELP/HECS repayment</div><div class="v" id="out-help">$0</div></div>
+    <div class="stat"><div class="k">Effective tax rate</div><div class="v" id="out-eff">__V_EFF__</div></div><div class="stat"><div class="k">GST / year</div><div class="v" id="out-gst-annual">__V_GST__</div></div><div class="stat"><div class="k">Weekly gross (ex GST)</div><div class="v" id="out-weekly">__V_WEEKLY__</div><div class="hint"><span id="out-days">__DAYS__</span> days/year</div></div>
+    <div class="stat"><div class="k" id="super-label">Super set-aside (__SG_PCT__%)</div><div class="v" id="out-super">__V_SUPER__</div></div><div class="stat"><div class="k">Take-home after super set-aside</div><div class="v" id="out-takehome-super">__V_TAKE_SUPER__</div></div>
+  </div>
+  <table class="baked"><caption>__CAPTION__</caption><thead><tr><th>Item</th><th>AUD</th></tr></thead><tbody><tr><td>Annual income</td><td>__V_ANNUAL_EX__</td></tr><tr><td>Income tax</td><td>__V_TAX__</td></tr><tr><td>Medicare levy</td><td>__V_MEDICARE__</td></tr><tr><td>Estimated take-home</td><td>__V_TAKE__</td></tr></tbody></table>__NEIGHBOURS__
+</section>
+
+<section class="card"><h2>Get occasional AU contractor tips</h2><p class="sub lead-copy">Useful rate, tax and freelancing notes. No spam. Unsubscribe anytime. For a cheat-sheet now, use “Print / save PDF” above.</p><form id="lead-form" name="lead" method="post" data-netlify="true" netlify-honeypot="bot-field" action="/"><div class="grid grid-2"><div><label for="name">Name (optional)</label><input id="name" name="name" type="text" autocomplete="name"></div><div><label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email"></div></div><p class="sr-only"><label>Do not fill: <input name="bot-field"></label></p><input type="hidden" name="form-name" value="lead"><div class="submit-row"><button class="primary" type="submit">Send me occasional AU contractor tips</button></div><div id="form-msg" class="form-msg" role="status"></div></form></section>
+__PRESETS__
+<section class="card"><h2>About this calculator</h2><p>Ian Hunt built this calculator in Australia through Curious Ape to make contractor rate decisions less opaque. Rates are re-checked every July and after each federal budget.</p><p>Last updated: __DATE_MODIFIED__ · Rates last checked: __LAST_CHECKED__ (FY<span class="current-fy">__FY__</span>).</p></section>
+<section class="card"><h2>FAQ</h2><ul class="faq-list">__FAQ_ITEMS__</ul></section>
+<section class="card"><h2>Disclaimer and sources</h2><p class="disclaimer">Estimate only, not tax, financial or legal advice. Actual tax depends on your circumstances. Confirm figures with the ATO or a registered tax agent.</p><ul class="sources">__SOURCES__</ul><p class="source-note">__MEDICARE_NOTE__</p></section>
+<footer><p><strong>AU Freelancer Calc</strong> — Australian contractor and employee estimate</p><p><a href="/presets/">All presets</a> · <a href="/how-it-works/">How it works</a> · <a href="/sitemap.xml">Sitemap</a> · <a href="/llms.txt">llms.txt</a></p></footer>
+</div><script src="/config.js"></script><script src="/calc.js"></script><script src="/app.js"></script></body></html>
