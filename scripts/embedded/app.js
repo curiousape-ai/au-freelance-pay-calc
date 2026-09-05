@@ -108,6 +108,9 @@
   setGst(gstInclusive);
 
 
+  const printBtn = $('#print-btn');
+  if (printBtn) printBtn.addEventListener('click', () => window.print());
+
   // Email form — Formspree if configured; else Netlify Forms POST to current path
   const form = $('#lead-form');
   const msg = $('#form-msg');

@@ -131,6 +131,18 @@ table.baked td:last-child, table.baked th:last-child { text-align: right; font-w
 table.neighbours td, table.neighbours th { text-align: right; }
 table.neighbours td:first-child, table.neighbours th:first-child { text-align: left; }
 table.neighbours tr.current td { background: rgba(61,214,198,.08); font-weight: 700; }
+
+.print-only { display: none; }
+@media print {
+  :root { --text: #111; --muted: #444; --border: #bbb; }
+  body { background: #fff; color: #111; }
+  .card { background: #fff; border: 1px solid #ccc; box-shadow: none; break-inside: avoid; }
+  .stat { border-color: #ccc; }
+  .no-print, .card:has(form), .presets, header.hero .ghost, footer, .seg { display: none !important; }
+  .print-only { display: block; }
+  a { color: #111; }
+  #out-takehome { color: #111 !important; }
+}
 .faq-list { margin: 0; padding: 0; list-style: none; }
 .faq-list li { margin-bottom: 14px; }
 .faq-list h3 { font-size: 1rem; margin: 0 0 4px; }
