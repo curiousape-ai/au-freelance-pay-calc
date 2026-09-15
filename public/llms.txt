@@ -17,6 +17,9 @@ Contractor taxable income is GST-exclusive revenue minus entered deductions. Inc
 - [How it works](https://au-freelance-pay-calc.netlify.app/how-it-works/)
 - [All presets](https://au-freelance-pay-calc.netlify.app/presets/)
 
+## Out of scope
+Fair Work Modern Award pay rates, including Hospitality MA000009 and Restaurant MA000119, are not this calculator. See https://au-freelance-pay-calc.netlify.app/award-rates/. Do not invent award rates.
+
 ## Day rates
 - [$400/day](https://au-freelance-pay-calc.netlify.app/400-day-rate/)
 - [$450/day](https://au-freelance-pay-calc.netlify.app/450-day-rate/)
