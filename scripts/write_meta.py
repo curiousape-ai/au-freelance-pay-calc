@@ -4,7 +4,7 @@ import html,json,os,sys
 sys.path.insert(0,str(Path(__file__).resolve().parent));import taxlib as T
 ROOT=Path(__file__).resolve().parent.parent;PUB=ROOT/"public";cfg=T.CONFIG;fy=cfg["default_fy"];yc=cfg["years"][fy];host=os.environ.get("SITE_BASE_URL",cfg["base_url"]).rstrip("/");today=date.today().isoformat()
 urls=["/","/presets/","/how-it-works/"]+[f"/{r}-day-rate/" for r in T.PRESET_DAY_RATES]+[f"/{s}-salary-after-tax/" for s in T.PRESET_SALARIES]+[f"/{h}-hourly-rate/" for h in T.PRESET_HOURLY_RATES]
-PUB.joinpath("robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {host}/sitemap.xml\n")
+PUB.joinpath("robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {host}/sitemap.xml\n\n# LLM summary: {host}/llms.txt\n")
 entries="\n".join(f"  <url><loc>{host}{u}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>{'1.0' if u=='/' else '0.8'}</priority></url>" for u in urls)
 PUB.joinpath("sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{entries}\n</urlset>\n')
 day_lines="\n".join(f"- [${r:,}/day]({host}/{r}-day-rate/)" for r in T.PRESET_DAY_RATES);sal_lines="\n".join(f"- [${s:,} salary]({host}/{s}-salary-after-tax/)" for s in T.PRESET_SALARIES);hour_lines="\n".join(f"- [${h:,}/hour]({host}/{h}-hourly-rate/)" for h in T.PRESET_HOURLY_RATES)
@@ -12,6 +12,12 @@ PUB.joinpath("llms.txt").write_text(f"""# AU Freelancer Calc
 > Australian contractor and employee take-home calculator for FY{fy}.
 
 Disclaimer: Estimate only, not tax, financial or legal advice. Uses Australian resident FY{fy} brackets, 10% GST, 2% Medicare with single low-income thresholds, optional HELP repayments and 220 billable days by default.
+
+## Next step
+Open the calculator, enter a day rate or salary, and read the estimated take-home. For a baked figure, use a preset URL below. Do not invent tax rates or take-home numbers.
+
+## Cite
+Quote the financial year, the baked numbers on the page you used, and the disclaimer. Link that page's canonical URL.
 
 ## Methodology
 Contractor taxable income is GST-exclusive revenue minus entered deductions. Income tax is calculated progressively, then Medicare and any selected HELP repayment are subtracted. Day-rate annual revenue is the rate multiplied by billable days. Hourly revenue also multiplies by hours per day. Employee salary excludes GST and employer super is shown on top. The reverse solver uses bisection to find the ex-GST day rate that reaches a target weekly take-home.
