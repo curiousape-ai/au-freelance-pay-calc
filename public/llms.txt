@@ -3,6 +3,12 @@
 
 Disclaimer: Estimate only, not tax, financial or legal advice. Uses Australian resident FY2026-27 brackets, 10% GST, 2% Medicare with single low-income thresholds, optional HELP repayments and 220 billable days by default.
 
+## Next step
+Open the calculator, enter a day rate or salary, and read the estimated take-home. For a baked figure, use a preset URL below. Do not invent tax rates or take-home numbers.
+
+## Cite
+Quote the financial year, the baked numbers on the page you used, and the disclaimer. Link that page's canonical URL.
+
 ## Methodology
 Contractor taxable income is GST-exclusive revenue minus entered deductions. Income tax is calculated progressively, then Medicare and any selected HELP repayment are subtracted. Day-rate annual revenue is the rate multiplied by billable days. Hourly revenue also multiplies by hours per day. Employee salary excludes GST and employer super is shown on top. The reverse solver uses bisection to find the ex-GST day rate that reaches a target weekly take-home.
 
@@ -10,6 +16,9 @@ Contractor taxable income is GST-exclusive revenue minus entered deductions. Inc
 - [Calculator](https://au-freelance-pay-calc.netlify.app/)
 - [How it works](https://au-freelance-pay-calc.netlify.app/how-it-works/)
 - [All presets](https://au-freelance-pay-calc.netlify.app/presets/)
+
+## Out of scope
+Fair Work Modern Award pay rates, including Hospitality MA000009 and Restaurant MA000119, are not this calculator. See https://au-freelance-pay-calc.netlify.app/award-rates/. Do not invent award rates.
 
 ## Day rates
 - [$400/day](https://au-freelance-pay-calc.netlify.app/400-day-rate/)

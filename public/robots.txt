@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://au-freelance-pay-calc.netlify.app/sitemap.xml
+
+# LLM summary: https://au-freelance-pay-calc.netlify.app/llms.txt

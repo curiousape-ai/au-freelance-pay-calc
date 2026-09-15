@@ -13,6 +13,14 @@ Live: **https://au-freelance-pay-calc.netlify.app/**
 - 23 day-rate, 11 employee-salary and 16 hourly-rate preset pages, plus preset index, methodology and custom 404.
 - Netlify Forms tips-list capture and Plausible events: `calc_change`, `mode_change`, `print`, `lead_submit`.
 
+## Fair Work award rates (not this product)
+
+This repository is the Australian freelancer take-home calculator. It does not publish Modern Award rates.
+
+A prior Astro spike baked 112 adult pages for Hospitality Industry Award MA000009 and Restaurant Industry Award MA000119 from the Fair Work Commission MAPD API (CC BY 4.0). No invented rates. That work lives on Origin at [apelabs/tmp-48b0e8ec6921b320](https://cursor.com/codebase/apelabs/tmp-48b0e8ec6921b320) (`git clone https://origin.cursor.com/apelabs/tmp-48b0e8ec6921b320.git`, agent [bc-5458a411](https://cursor.com/agents/bc-5458a411)). Those pages need their own durable GitHub repository. Do not copy them into this calculator or into wagegrid.
+
+The public note on this site is `/award-rates/`.
+
 ## Formula sources and disclaimer
 
 Rates live in `scripts/cfg.json`, the single source used by the Python and JavaScript engines. Last checked: 2026-09-05.
